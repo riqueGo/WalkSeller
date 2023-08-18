@@ -1,0 +1,20 @@
+[
+  {
+    "id": "943eae44-b39f-4dd7-b631-4425d99a5457",
+    "position": {
+      "latitude": -7.9857217923868165,
+      "longitude": -34.8407609263523
+    },
+    "title": "Seller 1",
+    "description": "Description of Seller 1"
+  },
+  {
+    "id": "45e0d975-1746-47fe-8edc-79a45a82bfa6",
+    "position": {
+      "latitude": -7.986808069602836,
+      "longitude": -34.841345948073275
+    },
+    "title": "Seller 2",
+    "description": "Description of Seller 2"
+  }
+]

@@ -20,6 +20,8 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.rique.walkseller.R
 import com.rique.walkseller.Utils.Utils
+import com.rique.walkseller.interfaces.ISellerRepository
+import com.rique.walkseller.repository.MockSellerRepository
 import com.rique.walkseller.viewModel.MapViewModel
 
 @Composable
@@ -27,15 +29,17 @@ fun MapScreen(viewModel: MapViewModel) {
     val state = viewModel.state.value
     val cameraPositionState = rememberCameraPositionState()
     val context = LocalContext.current
+    val sellerRepository: ISellerRepository = MockSellerRepository(context)
 
     val mapProperties = MapProperties(
         isMyLocationEnabled = state.lastKnownLocation != null,
-        mapStyleOptions = MapStyleOptions.loadRawResourceStyle(LocalContext.current, R.raw.map)
+        mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.map)
     )
 
     val mapUiSettings = MapUiSettings(
         myLocationButtonEnabled = false,
         zoomControlsEnabled = false,
+        mapToolbarEnabled = false
     )
 
     Box(
@@ -49,7 +53,9 @@ fun MapScreen(viewModel: MapViewModel) {
             onMapLoaded = {
                 viewModel.moveToLocation(state.lastKnownLocation, cameraPositionState)
             }
-        )
+        ) {
+            SellerMarkers(repository = sellerRepository)
+        }
         Column(modifier = Modifier
             .align(Alignment.BottomEnd)
             .padding(16.dp)) {
@@ -69,6 +75,5 @@ fun MapScreen(viewModel: MapViewModel) {
                 Icon(painter = painterResource(id = R.drawable.my_location), contentDescription = "My Location")
             }
         }
-
     }
 }
