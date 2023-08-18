@@ -19,12 +19,14 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.rique.walkseller.R
+import com.rique.walkseller.Utils.Utils
 import com.rique.walkseller.viewModel.MapViewModel
 
 @Composable
 fun MapScreen(viewModel: MapViewModel) {
     val state = viewModel.state.value
     val cameraPositionState = rememberCameraPositionState()
+    val context = LocalContext.current
 
     val mapProperties = MapProperties(
         isMyLocationEnabled = state.lastKnownLocation != null,
@@ -53,7 +55,7 @@ fun MapScreen(viewModel: MapViewModel) {
             .padding(16.dp)) {
             FloatingActionButton(
                 onClick = {
-                          //TODO: Show all sellers
+                    Utils.showToast(context, "Sellers Button Clicked!")
                 },
             ) {
                 Icon(painter = painterResource(id = R.drawable.shopping_basket), contentDescription = "Sellers")
