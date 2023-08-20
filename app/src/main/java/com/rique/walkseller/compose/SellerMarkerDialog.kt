@@ -12,7 +12,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -25,11 +25,12 @@ import androidx.compose.ui.window.Dialog
 import com.rique.walkseller.R
 import com.rique.walkseller.Utils.Utils
 import com.rique.walkseller.uiState.Seller
+import com.rique.walkseller.viewModel.MapViewModel
 
 @Composable
-fun SellerMarkerDialog(seller: MutableState<Seller?>, onDismiss: () -> Unit) {
+fun SellerMarkerDialog(viewModel: MapViewModel, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
-        seller.value?.let { SellerMarkerDialogUI(it) }
+        viewModel.state.value.selectedSeller?.let { SellerMarkerDialogUI(it) }
     }
 }
 
@@ -67,9 +68,13 @@ fun SellerMarkerDialogUI(seller: Seller) {
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
             FowardButton(
-                { Utils.showToast(context, "Products Button was clicked") },
-                "Products",
-                "See Products"
+                onClick = { Utils.showToast(context, "Products Button was clicked") },
+                title = "Products",
+                contentDescription = "See Products",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .align(alignment = Alignment.CenterHorizontally)
             )
         }
     }

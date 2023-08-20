@@ -2,8 +2,6 @@ package com.rique.walkseller.compose
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -16,13 +14,12 @@ import androidx.compose.ui.unit.dp
 import com.rique.walkseller.R
 
 @Composable
-fun FowardButton(onClick: () -> Unit, title: String, contentDescription: String) {
+fun FowardButton(onClick: () -> Unit, title: String, contentDescription: String, modifier: Modifier = Modifier) {
     Button(
         onClick = {
             onClick()
-        }, modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        },
+        modifier = modifier
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

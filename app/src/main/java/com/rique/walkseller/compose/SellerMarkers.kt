@@ -1,40 +1,29 @@
 package com.rique.walkseller.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.MarkerState
 import com.rique.walkseller.R
 import com.rique.walkseller.Utils.Utils
-import com.rique.walkseller.interfaces.ISellerRepository
-import com.rique.walkseller.uiState.Seller
+import com.rique.walkseller.viewModel.MapViewModel
 
 @Composable
-fun SellerMarkers(repository: ISellerRepository) {
-    val sellers = repository.getSellers()
-    val bitmapDescriptor =
+fun SellerMarkers(viewModel: MapViewModel) {
+    val state = viewModel.state.value
+    val sellerIcon =
         Utils.bitmapDescriptorFromVector(LocalContext.current, R.drawable.delivery_dining)
-    val selectedSeller = remember { mutableStateOf<Seller?>(null) }
-    var openDialog by remember {
-        mutableStateOf(false)
-    }
-    sellers.forEach { seller ->
 
+    state.sellers.forEach { seller ->
         MarkerInfoWindow(
             state = MarkerState(seller.position),
-            icon = bitmapDescriptor,
+            icon = sellerIcon,
             onClick = {
-                selectedSeller.value = seller
-                openDialog = !openDialog
-                true
+                viewModel.onClickSellerMarker(seller)
             }
         )
     }
-    if (openDialog) {
-        SellerMarkerDialog(seller = selectedSeller, onDismiss = { openDialog = !openDialog })
+    if (state.isOpenDialogMarker) {
+        SellerMarkerDialog(viewModel = viewModel, onDismiss = { viewModel.setIsOpenDialogMarker(false) })
     }
 }
