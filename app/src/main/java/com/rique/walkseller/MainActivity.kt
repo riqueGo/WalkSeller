@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
-        if(isGranted){
+        if (isGranted) {
             viewModel.getDeviceLocation(fusedLocationProviderClient)
         }
     }
@@ -42,6 +42,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         askPermissions()
+        viewModel.loadSellers()
         setContent {
             MapScreen(
                 viewModel = viewModel

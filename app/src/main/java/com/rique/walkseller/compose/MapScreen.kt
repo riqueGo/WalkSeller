@@ -19,9 +19,9 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.rique.walkseller.R
+import com.rique.walkseller.Utils.Constants.MAX_ZOOM
+import com.rique.walkseller.Utils.Constants.MIN_ZOOM
 import com.rique.walkseller.Utils.Utils
-import com.rique.walkseller.interfaces.ISellerRepository
-import com.rique.walkseller.repository.MockSellerRepository
 import com.rique.walkseller.viewModel.MapViewModel
 
 @Composable
@@ -29,11 +29,12 @@ fun MapScreen(viewModel: MapViewModel) {
     val state = viewModel.state.value
     val cameraPositionState = rememberCameraPositionState()
     val context = LocalContext.current
-    val sellerRepository: ISellerRepository = MockSellerRepository(context)
 
     val mapProperties = MapProperties(
         isMyLocationEnabled = state.lastKnownLocation != null,
-        mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.map)
+        mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.map),
+        maxZoomPreference = MAX_ZOOM,
+        minZoomPreference = MIN_ZOOM
     )
 
     val mapUiSettings = MapUiSettings(
@@ -54,7 +55,7 @@ fun MapScreen(viewModel: MapViewModel) {
                 viewModel.moveToLocation(state.lastKnownLocation, cameraPositionState)
             }
         ) {
-            SellerMarkers(repository = sellerRepository)
+            SellerMarkers(viewModel)
         }
         Column(modifier = Modifier
             .align(Alignment.BottomEnd)
