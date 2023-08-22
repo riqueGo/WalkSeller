@@ -1,4 +1,4 @@
-package com.rique.walkseller.uiState
+package com.rique.walkseller.domain
 
 import com.google.android.gms.maps.model.LatLng
 import java.util.UUID

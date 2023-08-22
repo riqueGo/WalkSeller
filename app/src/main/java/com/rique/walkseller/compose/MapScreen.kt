@@ -1,79 +1,74 @@
 package com.rique.walkseller.compose
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.rememberCameraPositionState
 import com.rique.walkseller.R
-import com.rique.walkseller.Utils.Constants.MAX_ZOOM
-import com.rique.walkseller.Utils.Constants.MIN_ZOOM
-import com.rique.walkseller.Utils.Utils
 import com.rique.walkseller.viewModel.MapViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(viewModel: MapViewModel) {
-    val state = viewModel.state.value
-    val cameraPositionState = rememberCameraPositionState()
-    val context = LocalContext.current
+    val mapState = viewModel.mapState.value
+    val mapPropertiesState = viewModel.mapPropertiesState.value
 
-    val mapProperties = MapProperties(
-        isMyLocationEnabled = state.lastKnownLocation != null,
-        mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.map),
-        maxZoomPreference = MAX_ZOOM,
-        minZoomPreference = MIN_ZOOM
-    )
-
-    val mapUiSettings = MapUiSettings(
-        myLocationButtonEnabled = false,
-        zoomControlsEnabled = false,
-        mapToolbarEnabled = false
-    )
-
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        GoogleMap(
-            modifier = Modifier.fillMaxSize(),
-            properties = mapProperties,
-            cameraPositionState = cameraPositionState,
-            uiSettings = mapUiSettings,
-            onMapLoaded = {
-                viewModel.moveToLocation(state.lastKnownLocation, cameraPositionState)
-            }
+    Scaffold { contentPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding)
         ) {
-            SellerMarkers(viewModel)
-        }
-        Column(modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .padding(16.dp)) {
-            FloatingActionButton(
-                onClick = {
-                    Utils.showToast(context, "Sellers Button Clicked!")
-                },
+            GoogleMap(
+                modifier = Modifier.fillMaxSize(),
+                properties = mapPropertiesState.mapProperties!!,
+                cameraPositionState = mapPropertiesState.cameraPositionState,
+                uiSettings = mapPropertiesState.mapUiSettings,
+                onMapLoaded = {
+                    viewModel.moveToLocation(mapState.lastKnownLocation, mapPropertiesState.cameraPositionState)
+                }
             ) {
-                Icon(painter = painterResource(id = R.drawable.shopping_basket), contentDescription = "Sellers")
+                SellerMarkers(viewModel)
             }
-            Spacer(modifier = Modifier.padding(vertical = 8.dp))
-            FloatingActionButton(
-                onClick = {
-                    viewModel.moveToLocation(state.lastKnownLocation, cameraPositionState)
-                },
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Icon(painter = painterResource(id = R.drawable.my_location), contentDescription = "My Location")
+                CustomFloatingActionButton(
+                    onClick = {
+                        viewModel.setIsOpenBottomSheet(true)
+                    },
+                    drawableResId = R.drawable.shopping_basket,
+                    contentDescription = "Sellers"
+                )
+                CustomFloatingActionButton(
+                    onClick = {
+                        viewModel.moveToLocation(mapState.lastKnownLocation, mapPropertiesState.cameraPositionState)
+                    },
+                    drawableResId = R.drawable.my_location,
+                    contentDescription = "My Location"
+                )
+            }
+        }
+        if (mapState.isOpenBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    viewModel.setIsOpenBottomSheet(false)
+                },
+                sheetState = mapPropertiesState.sheetState
+            ) {
+                SellerBottomSheetContent(sellers = mapState.sellers)
             }
         }
     }
