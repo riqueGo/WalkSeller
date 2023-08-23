@@ -1,4 +1,4 @@
-package com.rique.walkseller.compose
+package com.rique.walkseller.ui.compose
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement

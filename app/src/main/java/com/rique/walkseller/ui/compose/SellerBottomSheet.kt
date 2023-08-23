@@ -1,4 +1,4 @@
-package com.rique.walkseller.compose
+package com.rique.walkseller.ui.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rique.walkseller.R
 import com.rique.walkseller.domain.Seller
-import com.rique.walkseller.viewModel.MapViewModel
+import com.rique.walkseller.ui.viewModel.MapViewModel
 
 @Composable
 fun SellerBottomSheetTitle(modifier: Modifier = Modifier) {

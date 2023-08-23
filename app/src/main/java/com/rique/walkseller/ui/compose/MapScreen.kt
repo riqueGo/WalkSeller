@@ -1,4 +1,4 @@
-package com.rique.walkseller.compose
+package com.rique.walkseller.ui.compose
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.GoogleMap
 import com.rique.walkseller.R
-import com.rique.walkseller.viewModel.MapViewModel
+import com.rique.walkseller.ui.viewModel.MapViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

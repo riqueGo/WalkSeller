@@ -1,4 +1,4 @@
-package com.rique.walkseller.viewModel
+package com.rique.walkseller.ui.viewModel
 
 import android.content.Context
 import android.location.Location
@@ -20,13 +20,13 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.rique.walkseller.R
-import com.rique.walkseller.Utils.Constants
-import com.rique.walkseller.Utils.Constants.TAG
-import com.rique.walkseller.Utils.Constants.TARGET_ZOOM
+import com.rique.walkseller.utils.Constants
+import com.rique.walkseller.utils.Constants.TAG
+import com.rique.walkseller.utils.Constants.TARGET_ZOOM
 import com.rique.walkseller.interfaces.ISellerRepository
-import com.rique.walkseller.uiState.MapState
+import com.rique.walkseller.ui.state.MapState
 import com.rique.walkseller.domain.Seller
-import com.rique.walkseller.uiState.MapPropertiesState
+import com.rique.walkseller.ui.state.MapPropertiesState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.rique.walkseller.uiState
+package com.rique.walkseller.ui.state
 
 import android.location.Location
 import com.rique.walkseller.domain.Seller

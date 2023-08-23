@@ -1,12 +1,12 @@
-package com.rique.walkseller.compose
+package com.rique.walkseller.ui.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.MarkerState
 import com.rique.walkseller.R
-import com.rique.walkseller.Utils.Utils
-import com.rique.walkseller.viewModel.MapViewModel
+import com.rique.walkseller.utils.Utils
+import com.rique.walkseller.ui.viewModel.MapViewModel
 
 @Composable
 fun SellerMarkers(viewModel: MapViewModel) {
