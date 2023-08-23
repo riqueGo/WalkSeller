@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.rique.walkseller.R
 import com.rique.walkseller.interfaces.ISellerRepository
-import com.rique.walkseller.uiState.Seller
+import com.rique.walkseller.domain.Seller
 import java.io.InputStreamReader
 
 class MockSellerRepository(private val context: Context): ISellerRepository {

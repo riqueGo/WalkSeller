@@ -23,7 +23,9 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
-            viewModel.getDeviceLocation(fusedLocationProviderClient)
+            initializeMap()
+        } else {
+            finish()
         }
     }
 
@@ -32,17 +34,20 @@ class MainActivity : ComponentActivity() {
             this,
             ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED -> {
-            viewModel.getDeviceLocation(fusedLocationProviderClient)
+            initializeMap()
         } else -> {
             requestPermissionLauncher.launch(ACCESS_FINE_LOCATION)
         }
     }
 
+    private fun initializeMap() {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        viewModel.initMap(fusedLocationProviderClient, applicationContext)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         askPermissions()
-        viewModel.loadSellers()
         setContent {
             MapScreen(
                 viewModel = viewModel

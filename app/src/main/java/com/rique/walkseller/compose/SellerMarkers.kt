@@ -10,7 +10,7 @@ import com.rique.walkseller.viewModel.MapViewModel
 
 @Composable
 fun SellerMarkers(viewModel: MapViewModel) {
-    val state = viewModel.state.value
+    val state = viewModel.mapState.value
     val sellerIcon =
         Utils.bitmapDescriptorFromVector(LocalContext.current, R.drawable.delivery_dining)
 

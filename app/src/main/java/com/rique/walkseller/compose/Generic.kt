@@ -1,9 +1,11 @@
 package com.rique.walkseller.compose
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,7 +16,12 @@ import androidx.compose.ui.unit.dp
 import com.rique.walkseller.R
 
 @Composable
-fun FowardButton(onClick: () -> Unit, title: String, contentDescription: String, modifier: Modifier = Modifier) {
+fun FowardButton(
+    onClick: () -> Unit,
+    title: String,
+    contentDescription: String,
+    modifier: Modifier = Modifier
+) {
     Button(
         onClick = {
             onClick()
@@ -32,5 +39,19 @@ fun FowardButton(onClick: () -> Unit, title: String, contentDescription: String,
                 modifier = Modifier.size(18.dp)
             )
         }
+    }
+}
+
+@Composable
+fun CustomFloatingActionButton(
+    onClick: () -> Unit, @DrawableRes drawableResId: Int, contentDescription: String?
+) {
+    FloatingActionButton(
+        onClick = { onClick() },
+    ) {
+        Icon(
+            painter = painterResource(id = drawableResId),
+            contentDescription = contentDescription
+        )
     }
 }
