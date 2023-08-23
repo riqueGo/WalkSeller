@@ -109,7 +109,15 @@ class MapViewModel @Inject constructor(
     fun onClickSellerMarker(seller: Seller): Boolean {
         setSelectedSeller(seller)
         setIsOpenDialogMarker(true)
+        moveToLocation(seller.position)
         return true
+    }
+
+    fun onClickSellerBottomSheet(seller: Seller) {
+        setSelectedSeller(seller)
+        setIsOpenBottomSheet(false)
+        setIsOpenDialogMarker(true)
+        moveToLocation(seller.position)
     }
 
     fun initMap(fusedLocationProviderClient: FusedLocationProviderClient, context: Context) {
@@ -142,12 +150,19 @@ class MapViewModel @Inject constructor(
         return CameraUpdateFactory.newCameraPosition(cameraPosition)
     }
 
-    fun moveToLocation(location: Location?, cameraPositionState: CameraPositionState) {
+    fun moveToLocation(location: Location?) {
         location?.let {
             val cameraUpdate = calculateCameraUpdate(it.toLatLng(), TARGET_ZOOM)
             viewModelScope.launch {
-                cameraPositionState.animate(cameraUpdate, 500)
+                _mapPropertiesState.value.cameraPositionState.animate(cameraUpdate, 500)
             }
+        }
+    }
+
+    fun moveToLocation(location: LatLng) {
+        val cameraUpdate = calculateCameraUpdate(location, TARGET_ZOOM)
+        viewModelScope.launch {
+            _mapPropertiesState.value.cameraPositionState.animate(cameraUpdate, 500)
         }
     }
 

@@ -34,7 +34,7 @@ fun MapScreen(viewModel: MapViewModel) {
                 cameraPositionState = mapPropertiesState.cameraPositionState,
                 uiSettings = mapPropertiesState.mapUiSettings,
                 onMapLoaded = {
-                    viewModel.moveToLocation(mapState.lastKnownLocation, mapPropertiesState.cameraPositionState)
+                    viewModel.moveToLocation(mapState.lastKnownLocation)
                 }
             ) {
                 SellerMarkers(viewModel)
@@ -54,7 +54,7 @@ fun MapScreen(viewModel: MapViewModel) {
                 )
                 CustomFloatingActionButton(
                     onClick = {
-                        viewModel.moveToLocation(mapState.lastKnownLocation, mapPropertiesState.cameraPositionState)
+                        viewModel.moveToLocation(mapState.lastKnownLocation)
                     },
                     drawableResId = R.drawable.my_location,
                     contentDescription = "My Location"
@@ -68,7 +68,7 @@ fun MapScreen(viewModel: MapViewModel) {
                 },
                 sheetState = mapPropertiesState.sheetState
             ) {
-                SellerBottomSheetContent(sellers = mapState.sellers)
+                SellerBottomSheetContent(viewModel)
             }
         }
     }

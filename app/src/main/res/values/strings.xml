@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Walk Seller</string>
+    <string name="sellers">Sellers</string>
+    <string name="go_to_seller">Go to Seller</string>
 </resources>
