@@ -1,7 +1,9 @@
 package com.rique.walkseller.DI
 
 import android.content.Context
+import com.rique.walkseller.interfaces.IProductRepository
 import com.rique.walkseller.interfaces.ISellerRepository
+import com.rique.walkseller.repository.MockProductRepository
 import com.rique.walkseller.repository.MockSellerRepository
 import com.rique.walkseller.ui.viewModel.MapViewModel
 import com.rique.walkseller.ui.viewModel.SellerMarkersViewModel
@@ -20,6 +22,12 @@ object ViewModelModule {
     @ViewModelScoped
     fun provideMapViewModel(sellerRepository: ISellerRepository, sellerMarkersViewModel: SellerMarkersViewModel): MapViewModel {
         return MapViewModel(sellerRepository, sellerMarkersViewModel)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideProductRepository(@ApplicationContext context: Context): IProductRepository {
+        return MockProductRepository(context)
     }
 
     @Provides
