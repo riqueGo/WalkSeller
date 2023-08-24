@@ -1,4 +1,4 @@
-package com.rique.walkseller.Utils
+package com.rique.walkseller.utils
 
 import android.content.Context
 import android.graphics.Bitmap

@@ -1,4 +1,4 @@
-package com.rique.walkseller.compose
+package com.rique.walkseller.ui.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rique.walkseller.R
 import com.rique.walkseller.domain.Seller
-import com.rique.walkseller.viewModel.MapViewModel
 
 @Composable
 fun SellerBottomSheetTitle(modifier: Modifier = Modifier) {
@@ -91,16 +90,15 @@ fun SellerBottomSheetCard(seller: Seller, onClick: () -> Unit) {
 }
 
 @Composable
-fun SellerBottomSheetContent(viewModel: MapViewModel) {
-    val mapState = viewModel.mapState.value
+fun SellerBottomSheetContent(sellers: List<Seller>, onClickSellerBottomSheet: (Seller) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
         SellerBottomSheetTitle(modifier = Modifier.align(Alignment.CenterHorizontally))
-        mapState.sellers.forEach { seller ->
-            SellerBottomSheetCard(seller = seller) { viewModel.onClickSellerBottomSheet(seller = seller) }
+        sellers.forEach { seller ->
+            SellerBottomSheetCard(seller = seller) { onClickSellerBottomSheet(seller) }
         }
     }
 }

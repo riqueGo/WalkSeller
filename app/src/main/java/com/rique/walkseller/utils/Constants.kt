@@ -1,4 +1,4 @@
-package com.rique.walkseller.Utils
+package com.rique.walkseller.utils
 
 object Constants {
     const val TAG: String = "Walk Seller App"

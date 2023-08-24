@@ -1,4 +1,4 @@
-package com.rique.walkseller.compose
+package com.rique.walkseller.ui.compose
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,16 +11,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.GoogleMap
 import com.rique.walkseller.R
-import com.rique.walkseller.viewModel.MapViewModel
+import com.rique.walkseller.ui.viewModel.MapViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(viewModel: MapViewModel) {
     val mapState = viewModel.mapState.value
     val mapPropertiesState = viewModel.mapPropertiesState.value
+    val sellerMarkersViewModel = viewModel.getSellerMarkersViewModel()
 
     Scaffold { contentPadding ->
         Box(
@@ -37,7 +39,7 @@ fun MapScreen(viewModel: MapViewModel) {
                     viewModel.moveToLocation(mapState.lastKnownLocation)
                 }
             ) {
-                SellerMarkers(viewModel)
+                SellerMarkers(sellerMarkersViewModel)
             }
             Column(
                 modifier = Modifier
@@ -50,14 +52,14 @@ fun MapScreen(viewModel: MapViewModel) {
                         viewModel.setIsOpenBottomSheet(true)
                     },
                     drawableResId = R.drawable.shopping_basket,
-                    contentDescription = "Sellers"
+                    contentDescription = stringResource(id = R.string.sellers)
                 )
                 CustomFloatingActionButton(
                     onClick = {
                         viewModel.moveToLocation(mapState.lastKnownLocation)
                     },
                     drawableResId = R.drawable.my_location,
-                    contentDescription = "My Location"
+                    contentDescription = stringResource(id = R.string.my_location)
                 )
             }
         }
@@ -68,7 +70,7 @@ fun MapScreen(viewModel: MapViewModel) {
                 },
                 sheetState = mapPropertiesState.sheetState
             ) {
-                SellerBottomSheetContent(viewModel)
+                SellerBottomSheetContent(sellers = mapState.sellers, onClickSellerBottomSheet = viewModel::onClickSellerBottomSheet)
             }
         }
     }

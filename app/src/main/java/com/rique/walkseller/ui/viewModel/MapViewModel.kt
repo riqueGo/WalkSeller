@@ -1,4 +1,4 @@
-package com.rique.walkseller.viewModel
+package com.rique.walkseller.ui.viewModel
 
 import android.content.Context
 import android.location.Location
@@ -20,13 +20,13 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.rique.walkseller.R
-import com.rique.walkseller.Utils.Constants
-import com.rique.walkseller.Utils.Constants.TAG
-import com.rique.walkseller.Utils.Constants.TARGET_ZOOM
+import com.rique.walkseller.utils.Constants
+import com.rique.walkseller.utils.Constants.TAG
+import com.rique.walkseller.utils.Constants.TARGET_ZOOM
 import com.rique.walkseller.interfaces.ISellerRepository
-import com.rique.walkseller.uiState.MapState
+import com.rique.walkseller.ui.state.MapState
 import com.rique.walkseller.domain.Seller
-import com.rique.walkseller.uiState.MapPropertiesState
+import com.rique.walkseller.ui.state.MapPropertiesState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,7 +34,8 @@ import javax.inject.Inject
 @OptIn(ExperimentalMaterial3Api::class)
 @HiltViewModel
 class MapViewModel @Inject constructor(
-    private val sellerRepository: ISellerRepository
+    private val sellerRepository: ISellerRepository,
+    private val sellerMarkersViewModel: SellerMarkersViewModel
 ) : ViewModel() {
 
     private val _mapPropertiesState: MutableState<MapPropertiesState> = mutableStateOf(
@@ -67,6 +68,17 @@ class MapViewModel @Inject constructor(
     val mapState: State<MapState>
         get() = _mapState
 
+    private fun initSellerMarkersViewModel() {
+        sellerMarkersViewModel.initSellerMarkerState(
+            sellers = mapState.value.sellers,
+            isOpenDialogMarker = mapState.value.isOpenDialogMarker,
+            setIsOpenDialogMarker = { isOpen: Boolean -> setIsOpenDialogMarker(isOpen) },
+            moveToLocation = { position: LatLng -> moveToLocation(position) })
+    }
+    fun getSellerMarkersViewModel(): SellerMarkersViewModel {
+        return sellerMarkersViewModel
+    }
+
     fun setLastKnownLocation(location: Location) {
         _mapState.value = _mapState.value.copy(lastKnownLocation = location)
     }
@@ -79,15 +91,15 @@ class MapViewModel @Inject constructor(
         _mapState.value = _mapState.value.copy(sellers = sellers)
     }
 
-    fun setIsOpenDialogMarker(isOpenDialog: Boolean){
+    fun setIsOpenDialogMarker(isOpenDialog: Boolean) {
         _mapState.value = _mapState.value.copy(isOpenDialogMarker = isOpenDialog)
     }
 
-    fun setIsOpenBottomSheet(isOpenBottomSheet: Boolean){
+    fun setIsOpenBottomSheet(isOpenBottomSheet: Boolean) {
         _mapState.value = _mapState.value.copy(isOpenBottomSheet = isOpenBottomSheet)
     }
 
-    fun setIsMapPropertiesLoaded( isLoaded: Boolean) {
+    fun setIsMapPropertiesLoaded(isLoaded: Boolean) {
         _mapPropertiesState.value = _mapPropertiesState.value.copy(isMapPropertiesLoaded = isLoaded)
     }
 
@@ -101,16 +113,10 @@ class MapViewModel @Inject constructor(
             )
         )
     }
+
     private fun loadSellers() {
         val sellers = sellerRepository.getSellers()
         setSellers(sellers)
-    }
-
-    fun onClickSellerMarker(seller: Seller): Boolean {
-        setSelectedSeller(seller)
-        setIsOpenDialogMarker(true)
-        moveToLocation(seller.position)
-        return true
     }
 
     fun onClickSellerBottomSheet(seller: Seller) {
@@ -121,11 +127,12 @@ class MapViewModel @Inject constructor(
     }
 
     fun initMap(fusedLocationProviderClient: FusedLocationProviderClient, context: Context) {
-        if(!_mapPropertiesState.value.isMapPropertiesLoaded) {
+        if (!_mapPropertiesState.value.isMapPropertiesLoaded) {
             setDeviceLocation(fusedLocationProviderClient)
             setMapProperties(context)
             loadSellers()
             setIsMapPropertiesLoaded(true)
+            initSellerMarkersViewModel()
         }
     }
 

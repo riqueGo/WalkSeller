@@ -1,4 +1,4 @@
-package com.rique.walkseller.uiState
+package com.rique.walkseller.ui.state
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState

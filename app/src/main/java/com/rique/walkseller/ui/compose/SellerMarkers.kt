@@ -1,16 +1,16 @@
-package com.rique.walkseller.compose
+package com.rique.walkseller.ui.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.MarkerState
 import com.rique.walkseller.R
-import com.rique.walkseller.Utils.Utils
-import com.rique.walkseller.viewModel.MapViewModel
+import com.rique.walkseller.utils.Utils
+import com.rique.walkseller.ui.viewModel.SellerMarkersViewModel
 
 @Composable
-fun SellerMarkers(viewModel: MapViewModel) {
-    val state = viewModel.mapState.value
+fun SellerMarkers(viewModel: SellerMarkersViewModel) {
+    val state = viewModel.sellerMarkersState.value
     val sellerIcon =
         Utils.bitmapDescriptorFromVector(LocalContext.current, R.drawable.delivery_dining)
 
@@ -24,6 +24,6 @@ fun SellerMarkers(viewModel: MapViewModel) {
         )
     }
     if (state.isOpenDialogMarker) {
-        SellerMarkerDialog(viewModel = viewModel, onDismiss = { viewModel.setIsOpenDialogMarker(false) })
+        SellerMarkerDialog(state.selectedSeller!!, onDismiss = { viewModel.setIsOpenDialogMarker(false) })
     }
 }

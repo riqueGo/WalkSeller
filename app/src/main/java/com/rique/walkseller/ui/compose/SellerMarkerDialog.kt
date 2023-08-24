@@ -1,4 +1,4 @@
-package com.rique.walkseller.compose
+package com.rique.walkseller.ui.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -18,19 +18,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.rique.walkseller.R
-import com.rique.walkseller.Utils.Utils
+import com.rique.walkseller.utils.Utils
 import com.rique.walkseller.domain.Seller
-import com.rique.walkseller.viewModel.MapViewModel
 
 @Composable
-fun SellerMarkerDialog(viewModel: MapViewModel, onDismiss: () -> Unit) {
+fun SellerMarkerDialog(seller: Seller, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
-        viewModel.mapState.value.selectedSeller?.let { SellerMarkerDialogUI(it) }
+        SellerMarkerDialogUI(seller)
     }
 }
 
@@ -69,8 +69,8 @@ fun SellerMarkerDialogUI(seller: Seller) {
             )
             FowardButton(
                 onClick = { Utils.showToast(context, "Products Button was clicked") },
-                title = "Products",
-                contentDescription = "See Products",
+                title = stringResource(id = R.string.products),
+                contentDescription = stringResource(id = R.string.see_products),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
