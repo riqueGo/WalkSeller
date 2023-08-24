@@ -21,6 +21,7 @@ import com.rique.walkseller.ui.viewModel.MapViewModel
 fun MapScreen(viewModel: MapViewModel) {
     val mapState = viewModel.mapState.value
     val mapPropertiesState = viewModel.mapPropertiesState.value
+    val sellerMarkersViewModel = viewModel.getSellerMarkersViewModel()
 
     Scaffold { contentPadding ->
         Box(
@@ -37,7 +38,7 @@ fun MapScreen(viewModel: MapViewModel) {
                     viewModel.moveToLocation(mapState.lastKnownLocation)
                 }
             ) {
-                SellerMarkers(viewModel)
+                SellerMarkers(sellerMarkersViewModel)
             }
             Column(
                 modifier = Modifier

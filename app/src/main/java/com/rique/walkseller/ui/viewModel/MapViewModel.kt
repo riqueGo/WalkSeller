@@ -34,7 +34,8 @@ import javax.inject.Inject
 @OptIn(ExperimentalMaterial3Api::class)
 @HiltViewModel
 class MapViewModel @Inject constructor(
-    private val sellerRepository: ISellerRepository
+    private val sellerRepository: ISellerRepository,
+    private val sellerMarkersViewModel: SellerMarkersViewModel
 ) : ViewModel() {
 
     private val _mapPropertiesState: MutableState<MapPropertiesState> = mutableStateOf(
@@ -67,6 +68,17 @@ class MapViewModel @Inject constructor(
     val mapState: State<MapState>
         get() = _mapState
 
+    private fun initSellerMarkersViewModel() {
+        sellerMarkersViewModel.initSellerMarkerState(
+            sellers = mapState.value.sellers,
+            isOpenDialogMarker = mapState.value.isOpenDialogMarker,
+            setIsOpenDialogMarker = { isOpen: Boolean -> setIsOpenDialogMarker(isOpen) },
+            moveToLocation = { position: LatLng -> moveToLocation(position) })
+    }
+    fun getSellerMarkersViewModel(): SellerMarkersViewModel {
+        return sellerMarkersViewModel
+    }
+
     fun setLastKnownLocation(location: Location) {
         _mapState.value = _mapState.value.copy(lastKnownLocation = location)
     }
@@ -79,15 +91,15 @@ class MapViewModel @Inject constructor(
         _mapState.value = _mapState.value.copy(sellers = sellers)
     }
 
-    fun setIsOpenDialogMarker(isOpenDialog: Boolean){
+    fun setIsOpenDialogMarker(isOpenDialog: Boolean) {
         _mapState.value = _mapState.value.copy(isOpenDialogMarker = isOpenDialog)
     }
 
-    fun setIsOpenBottomSheet(isOpenBottomSheet: Boolean){
+    fun setIsOpenBottomSheet(isOpenBottomSheet: Boolean) {
         _mapState.value = _mapState.value.copy(isOpenBottomSheet = isOpenBottomSheet)
     }
 
-    fun setIsMapPropertiesLoaded( isLoaded: Boolean) {
+    fun setIsMapPropertiesLoaded(isLoaded: Boolean) {
         _mapPropertiesState.value = _mapPropertiesState.value.copy(isMapPropertiesLoaded = isLoaded)
     }
 
@@ -101,16 +113,10 @@ class MapViewModel @Inject constructor(
             )
         )
     }
+
     private fun loadSellers() {
         val sellers = sellerRepository.getSellers()
         setSellers(sellers)
-    }
-
-    fun onClickSellerMarker(seller: Seller): Boolean {
-        setSelectedSeller(seller)
-        setIsOpenDialogMarker(true)
-        moveToLocation(seller.position)
-        return true
     }
 
     fun onClickSellerBottomSheet(seller: Seller) {
@@ -121,11 +127,12 @@ class MapViewModel @Inject constructor(
     }
 
     fun initMap(fusedLocationProviderClient: FusedLocationProviderClient, context: Context) {
-        if(!_mapPropertiesState.value.isMapPropertiesLoaded) {
+        if (!_mapPropertiesState.value.isMapPropertiesLoaded) {
             setDeviceLocation(fusedLocationProviderClient)
             setMapProperties(context)
             loadSellers()
             setIsMapPropertiesLoaded(true)
+            initSellerMarkersViewModel()
         }
     }
 
