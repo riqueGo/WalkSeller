@@ -68,7 +68,7 @@ fun MapScreen(viewModel: MapViewModel) {
                 },
                 sheetState = mapPropertiesState.sheetState
             ) {
-                SellerBottomSheetContent(viewModel)
+                SellerBottomSheetContent(sellers = mapState.sellers, onClickSellerBottomSheet = viewModel::onClickSellerBottomSheet)
             }
         }
     }

@@ -25,12 +25,11 @@ import androidx.compose.ui.window.Dialog
 import com.rique.walkseller.R
 import com.rique.walkseller.utils.Utils
 import com.rique.walkseller.domain.Seller
-import com.rique.walkseller.ui.viewModel.MapViewModel
 
 @Composable
-fun SellerMarkerDialog(viewModel: MapViewModel, onDismiss: () -> Unit) {
+fun SellerMarkerDialog(seller: Seller, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
-        viewModel.mapState.value.selectedSeller?.let { SellerMarkerDialogUI(it) }
+        SellerMarkerDialogUI(seller)
     }
 }
 

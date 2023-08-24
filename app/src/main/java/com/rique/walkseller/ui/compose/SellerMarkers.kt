@@ -24,6 +24,6 @@ fun SellerMarkers(viewModel: MapViewModel) {
         )
     }
     if (state.isOpenDialogMarker) {
-        SellerMarkerDialog(viewModel = viewModel, onDismiss = { viewModel.setIsOpenDialogMarker(false) })
+        SellerMarkerDialog(state.selectedSeller!!, onDismiss = { viewModel.setIsOpenDialogMarker(false) })
     }
 }
