@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.GoogleMap
 import com.rique.walkseller.R
@@ -51,14 +52,14 @@ fun MapScreen(viewModel: MapViewModel) {
                         viewModel.setIsOpenBottomSheet(true)
                     },
                     drawableResId = R.drawable.shopping_basket,
-                    contentDescription = "Sellers"
+                    contentDescription = stringResource(id = R.string.sellers)
                 )
                 CustomFloatingActionButton(
                     onClick = {
                         viewModel.moveToLocation(mapState.lastKnownLocation)
                     },
                     drawableResId = R.drawable.my_location,
-                    contentDescription = "My Location"
+                    contentDescription = stringResource(id = R.string.my_location)
                 )
             }
         }
