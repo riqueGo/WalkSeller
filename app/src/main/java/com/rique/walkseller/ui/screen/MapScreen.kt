@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.rique.walkseller.R
 import com.rique.walkseller.ui.compose.CustomFloatingActionButton
@@ -19,16 +20,26 @@ import com.rique.walkseller.ui.compose.SellerBottomSheet
 import com.rique.walkseller.ui.compose.SellerMarkers
 import com.rique.walkseller.ui.viewModel.MapViewModel
 import com.rique.walkseller.ui.viewModel.SellerBottomSheetViewModel
+import com.rique.walkseller.ui.viewModel.SellerMarkersViewModel
 
 @Composable
 fun MapScreen(viewModel: MapViewModel) {
     val mapState = viewModel.mapState.value
     val mapPropertiesState = viewModel.mapPropertiesState.value
 
-    val sellerMarkersViewModel = viewModel.getSellerMarkersViewModel()
+    val sellerMarkersViewModel: SellerMarkersViewModel = hiltViewModel()
+    sellerMarkersViewModel.setInitialData(
+        sellers = mapState.sellers,
+        moveToLocation = { position: LatLng, onCompletion: () -> Unit ->
+            viewModel.moveToLocation(
+                position,
+                onCompletion
+            )
+        }
+    )
 
     val sellerBottomSheetViewModel: SellerBottomSheetViewModel = hiltViewModel()
-    sellerBottomSheetViewModel.setInitialData(mapState.sellers, viewModel::onClickSellerBottomSheet)
+    sellerBottomSheetViewModel.setInitialData(mapState.sellers, sellerMarkersViewModel::onClickSellerMarker)
 
     Scaffold { contentPadding ->
         Box(
@@ -41,9 +52,6 @@ fun MapScreen(viewModel: MapViewModel) {
                 properties = mapPropertiesState.mapProperties!!,
                 cameraPositionState = mapPropertiesState.cameraPositionState,
                 uiSettings = mapPropertiesState.mapUiSettings,
-                onMapLoaded = {
-                    viewModel.moveToLocation(mapState.lastKnownLocation)
-                }
             ) {
                 SellerMarkers(sellerMarkersViewModel)
             }

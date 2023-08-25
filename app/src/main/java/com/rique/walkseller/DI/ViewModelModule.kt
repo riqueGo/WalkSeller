@@ -22,8 +22,8 @@ object ViewModelModule {
 
     @Provides
     @ViewModelScoped
-    fun provideMapViewModel(sellerRepository: ISellerRepository, sellerMarkersViewModel: SellerMarkersViewModel): MapViewModel {
-        return MapViewModel(sellerRepository, sellerMarkersViewModel)
+    fun provideMapViewModel(sellerRepository: ISellerRepository): MapViewModel {
+        return MapViewModel(sellerRepository)
     }
 
     @Provides

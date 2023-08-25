@@ -20,16 +20,12 @@ class SellerMarkersViewModel @Inject constructor() : ViewModel() {
     val sellerMarkersState: State<SellerMarkersState>
         get() = _sellerMarkersState
 
-    fun initSellerMarkerState(
+    fun setInitialData(
         sellers: List<Seller>,
-        isOpenDialogMarker: Boolean,
-        setIsOpenDialogMarker: (Boolean) -> Unit,
         moveToLocation: (LatLng, onCompletion: () -> Unit) -> Unit
     ) {
         _sellerMarkersState.value = _sellerMarkersState.value.copy(
             sellers = sellers,
-            isOpenDialogMarker = isOpenDialogMarker,
-            setIsOpenDialogMarker = setIsOpenDialogMarker,
             moveToLocation = moveToLocation
         )
     }

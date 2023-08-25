@@ -4,7 +4,6 @@ import android.content.Context
 import android.location.Location
 import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SheetState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -16,9 +15,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapUiSettings
 import com.rique.walkseller.R
 import com.rique.walkseller.utils.Constants
 import com.rique.walkseller.utils.Constants.TAG
@@ -35,58 +32,21 @@ import javax.inject.Inject
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val sellerRepository: ISellerRepository,
-    private val sellerMarkersViewModel: SellerMarkersViewModel
 ) : ViewModel() {
 
     private val _mapPropertiesState: MutableState<MapPropertiesState> = mutableStateOf(
-        MapPropertiesState(
-            isMapPropertiesLoaded = false,
-            cameraPositionState = CameraPositionState(),
-            sheetState = SheetState(false),
-            mapProperties = null,
-            mapUiSettings = MapUiSettings(
-                myLocationButtonEnabled = false,
-                zoomControlsEnabled = false,
-                mapToolbarEnabled = false
-            )
-        )
+        MapPropertiesState()
     )
 
     val mapPropertiesState: State<MapPropertiesState>
         get() = _mapPropertiesState
 
     private val _mapState: MutableState<MapState> = mutableStateOf(
-        MapState(
-            lastKnownLocation = null,
-            selectedSeller = null,
-            sellers = emptyList(),
-            isOpenDialogMarker = false,
-            isOpenBottomSheet = false
-        )
+        MapState()
     )
 
     val mapState: State<MapState>
         get() = _mapState
-
-    private fun initSellerMarkersViewModel() {
-        sellerMarkersViewModel.initSellerMarkerState(
-            sellers = mapState.value.sellers,
-            isOpenDialogMarker = mapState.value.isOpenDialogMarker,
-            setIsOpenDialogMarker = { isOpen: Boolean -> setIsOpenDialogMarker(isOpen) },
-            moveToLocation = {
-                position: LatLng,
-                onCompletion: () -> Unit ->
-                    moveToLocation(
-                        position,
-                        onCompletion
-                    )
-            }
-        )
-    }
-
-    fun getSellerMarkersViewModel(): SellerMarkersViewModel {
-        return sellerMarkersViewModel
-    }
 
     fun setLastKnownLocation(location: Location) {
         _mapState.value = _mapState.value.copy(lastKnownLocation = location)
@@ -94,14 +54,6 @@ class MapViewModel @Inject constructor(
 
     fun setSellers(sellers: List<Seller>) {
         _mapState.value = _mapState.value.copy(sellers = sellers)
-    }
-
-    fun setIsOpenDialogMarker(isOpenDialog: Boolean) {
-        _mapState.value = _mapState.value.copy(isOpenDialogMarker = isOpenDialog)
-    }
-
-    fun setIsOpenBottomSheet(isOpenBottomSheet: Boolean) {
-        _mapState.value = _mapState.value.copy(isOpenBottomSheet = isOpenBottomSheet)
     }
 
     fun setIsMapPropertiesLoaded(isLoaded: Boolean) {
@@ -124,18 +76,12 @@ class MapViewModel @Inject constructor(
         setSellers(sellers)
     }
 
-    fun onClickSellerBottomSheet(seller: Seller) {
-        setIsOpenBottomSheet(false)
-        sellerMarkersViewModel.onClickSellerMarker(seller)
-    }
-
     fun initMap(fusedLocationProviderClient: FusedLocationProviderClient, context: Context) {
         if (!_mapPropertiesState.value.isMapPropertiesLoaded) {
-            setDeviceLocation(fusedLocationProviderClient)
             setMapProperties(context)
             loadSellers()
             setIsMapPropertiesLoaded(true)
-            initSellerMarkersViewModel()
+            setDeviceLocation(fusedLocationProviderClient)
         }
     }
 
@@ -145,6 +91,7 @@ class MapViewModel @Inject constructor(
             locationResult.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     setLastKnownLocation(task.result)
+                    moveToLocation(task.result)
                 }
             }
         } catch (e: SecurityException) {

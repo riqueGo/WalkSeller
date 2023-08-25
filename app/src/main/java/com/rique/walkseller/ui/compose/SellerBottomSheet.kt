@@ -21,6 +21,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.rique.walkseller.R
 import com.rique.walkseller.domain.Seller
 import com.rique.walkseller.ui.viewModel.SellerBottomSheetViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun SellerBottomSheetTitle(modifier: Modifier = Modifier) {
@@ -95,6 +97,7 @@ fun SellerBottomSheetCard(seller: Seller, onClickPositionSeller: () -> Unit) {
 @Composable
 fun SellerBottomSheet(viewModel: SellerBottomSheetViewModel) {
     val state = viewModel.sellerBottomSheetState.value
+    val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
 
     if (state.isOpenBottomSheet) {
@@ -110,9 +113,11 @@ fun SellerBottomSheet(viewModel: SellerBottomSheetViewModel) {
                 SellerBottomSheetTitle(modifier = Modifier.align(Alignment.CenterHorizontally))
                 state.sellers.forEach { seller ->
                     SellerBottomSheetCard(seller = seller) {
-                        viewModel.onClickSellerBottomSheet(
-                            seller
-                        )
+                        scope.launch {
+                            sheetState.hide()
+                        }.invokeOnCompletion {
+                            viewModel.onClickSellerBottomSheet(seller)
+                        }
                     }
                 }
             }
