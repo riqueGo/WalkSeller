@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.google.maps.android.compose.GoogleMap
 import com.rique.walkseller.R
 import com.rique.walkseller.ui.compose.CustomFloatingActionButton
@@ -23,7 +22,7 @@ import com.rique.walkseller.ui.viewModel.MapViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MapScreen(viewModel: MapViewModel, navController: NavController) {
+fun MapScreen(viewModel: MapViewModel) {
     val mapState = viewModel.mapState.value
     val mapPropertiesState = viewModel.mapPropertiesState.value
     val sellerMarkersViewModel = viewModel.getSellerMarkersViewModel()
@@ -43,7 +42,7 @@ fun MapScreen(viewModel: MapViewModel, navController: NavController) {
                     viewModel.moveToLocation(mapState.lastKnownLocation)
                 }
             ) {
-                SellerMarkers(sellerMarkersViewModel, navController)
+                SellerMarkers(sellerMarkersViewModel)
             }
             Column(
                 modifier = Modifier

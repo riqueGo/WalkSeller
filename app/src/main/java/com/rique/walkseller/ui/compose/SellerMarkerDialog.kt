@@ -16,27 +16,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.navigation.NavController
 import com.rique.walkseller.R
 import com.rique.walkseller.domain.Seller
-import com.rique.walkseller.routes.NavDestination
+import com.rique.walkseller.navigation.LocalNavController
+import com.rique.walkseller.navigation.NavDestination
 
 @Composable
-fun SellerMarkerDialog(seller: Seller, onDismiss: () -> Unit, navController: NavController) {
+fun SellerMarkerDialog(seller: Seller, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
-        SellerMarkerDialogUI(seller, navController)
+        SellerMarkerDialogUI(seller)
     }
 }
 
 @Composable
-fun SellerMarkerDialogUI(seller: Seller, navController: NavController) {
+fun SellerMarkerDialogUI(seller: Seller) {
+    val navController = LocalNavController.current
 
     Card(
         elevation = CardDefaults.cardElevation(8.dp),
@@ -69,8 +69,8 @@ fun SellerMarkerDialogUI(seller: Seller, navController: NavController) {
             )
             FowardButton(
                 onClick = {
-                    val route = "${NavDestination.ProductsScreen}/${seller.id}"
-                    navController.navigate(route = route)
+                    val route = NavDestination.ProductsScreen.createRoute(sellerId = seller.id)
+                    navController?.navigate(route = route)
                 },
                 title = stringResource(id = R.string.products),
                 contentDescription = stringResource(id = R.string.see_products),

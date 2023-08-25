@@ -10,7 +10,7 @@ import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.rique.walkseller.routes.SetupNavGraph
+import com.rique.walkseller.navigation.SetupNavGraph
 import com.rique.walkseller.ui.viewModel.MapViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
