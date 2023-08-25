@@ -6,6 +6,7 @@ import com.rique.walkseller.interfaces.ISellerRepository
 import com.rique.walkseller.repository.MockProductRepository
 import com.rique.walkseller.repository.MockSellerRepository
 import com.rique.walkseller.ui.viewModel.MapViewModel
+import com.rique.walkseller.ui.viewModel.ProductsViewModel
 import com.rique.walkseller.ui.viewModel.SellerMarkersViewModel
 import dagger.Module
 import dagger.Provides
@@ -22,6 +23,12 @@ object ViewModelModule {
     @ViewModelScoped
     fun provideMapViewModel(sellerRepository: ISellerRepository, sellerMarkersViewModel: SellerMarkersViewModel): MapViewModel {
         return MapViewModel(sellerRepository, sellerMarkersViewModel)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideProductsViewModel(productRepository: IProductRepository): ProductsViewModel {
+        return ProductsViewModel(productRepository)
     }
 
     @Provides

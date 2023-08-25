@@ -2,6 +2,7 @@ package com.rique.walkseller.ui.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.MarkerState
 import com.rique.walkseller.R
@@ -9,7 +10,7 @@ import com.rique.walkseller.utils.Utils
 import com.rique.walkseller.ui.viewModel.SellerMarkersViewModel
 
 @Composable
-fun SellerMarkers(viewModel: SellerMarkersViewModel) {
+fun SellerMarkers(viewModel: SellerMarkersViewModel, navController: NavController) {
     val state = viewModel.sellerMarkersState.value
     val sellerIcon =
         Utils.bitmapDescriptorFromVector(LocalContext.current, R.drawable.delivery_dining)
@@ -24,6 +25,6 @@ fun SellerMarkers(viewModel: SellerMarkersViewModel) {
         )
     }
     if (state.isOpenDialogMarker) {
-        SellerMarkerDialog(state.selectedSeller!!, onDismiss = { viewModel.setIsOpenDialogMarker(false) })
+        SellerMarkerDialog(state.selectedSeller!!, onDismiss = { viewModel.setIsOpenDialogMarker(false) }, navController)
     }
 }

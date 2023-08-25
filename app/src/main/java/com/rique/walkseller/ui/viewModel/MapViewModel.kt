@@ -73,18 +73,23 @@ class MapViewModel @Inject constructor(
             sellers = mapState.value.sellers,
             isOpenDialogMarker = mapState.value.isOpenDialogMarker,
             setIsOpenDialogMarker = { isOpen: Boolean -> setIsOpenDialogMarker(isOpen) },
-            moveToLocation = { position: LatLng -> moveToLocation(position) })
+            moveToLocation = {
+                position: LatLng,
+                onCompletion: () -> Unit ->
+                    moveToLocation(
+                        position,
+                        onCompletion
+                    )
+            }
+        )
     }
+
     fun getSellerMarkersViewModel(): SellerMarkersViewModel {
         return sellerMarkersViewModel
     }
 
     fun setLastKnownLocation(location: Location) {
         _mapState.value = _mapState.value.copy(lastKnownLocation = location)
-    }
-
-    fun setSelectedSeller(seller: Seller) {
-        _mapState.value = _mapState.value.copy(selectedSeller = seller)
     }
 
     fun setSellers(sellers: List<Seller>) {
@@ -120,10 +125,8 @@ class MapViewModel @Inject constructor(
     }
 
     fun onClickSellerBottomSheet(seller: Seller) {
-        setSelectedSeller(seller)
         setIsOpenBottomSheet(false)
-        setIsOpenDialogMarker(true)
-        moveToLocation(seller.position)
+        sellerMarkersViewModel.onClickSellerMarker(seller)
     }
 
     fun initMap(fusedLocationProviderClient: FusedLocationProviderClient, context: Context) {
@@ -157,20 +160,20 @@ class MapViewModel @Inject constructor(
         return CameraUpdateFactory.newCameraPosition(cameraPosition)
     }
 
-    fun moveToLocation(location: Location?) {
+    fun moveToLocation(location: Location?, onCompletion: () -> Unit = {}) {
         location?.let {
             val cameraUpdate = calculateCameraUpdate(it.toLatLng(), TARGET_ZOOM)
             viewModelScope.launch {
                 _mapPropertiesState.value.cameraPositionState.animate(cameraUpdate, 500)
-            }
+            }.invokeOnCompletion { onCompletion() }
         }
     }
 
-    fun moveToLocation(location: LatLng) {
+    fun moveToLocation(location: LatLng, onCompletion: () -> Unit = {}) {
         val cameraUpdate = calculateCameraUpdate(location, TARGET_ZOOM)
         viewModelScope.launch {
             _mapPropertiesState.value.cameraPositionState.animate(cameraUpdate, 500)
-        }
+        }.invokeOnCompletion { onCompletion() }
     }
 
     private fun Location.toLatLng(): LatLng = LatLng(latitude, longitude)
