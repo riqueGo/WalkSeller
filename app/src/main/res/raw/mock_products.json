@@ -1,7 +1,7 @@
 [
   {
     "name": "Product 1",
-    "description": "Description for Product 1",
+    "description": "Description for Product 1 a very long long description with so many parameters to make the text very long",
     "price": 10.99,
     "urlImage": "url_image_1",
     "isActive": true

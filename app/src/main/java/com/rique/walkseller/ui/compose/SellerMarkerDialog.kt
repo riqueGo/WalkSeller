@@ -70,6 +70,7 @@ fun SellerMarkerDialogUI(seller: Seller) {
             FowardButton(
                 onClick = {
                     val route = NavDestination.ProductsScreen.createRoute(sellerId = seller.id)
+                    navController?.currentBackStackEntry?.savedStateHandle?.apply { set("seller", seller) }
                     navController?.navigate(route = route)
                 },
                 title = stringResource(id = R.string.products),
