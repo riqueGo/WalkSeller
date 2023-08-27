@@ -40,8 +40,7 @@ fun SetupNavGraph(mapViewModel: MapViewModel) {
                 if (seller != null) {
                     ProductsScreen(
                         viewModel = hiltViewModel(),
-                        seller = seller,
-                        navigateBack = { navController.popBackStack() }
+                        seller = seller
                     )
                 }
             }
