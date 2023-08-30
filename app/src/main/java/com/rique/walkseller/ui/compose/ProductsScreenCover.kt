@@ -13,12 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import com.rique.walkseller.DI.LocalNavControllerProvider
 import com.rique.walkseller.R
-import com.rique.walkseller.navigation.LocalNavController
 
 @Composable
 fun ProductsScreenCover(modifier: Modifier = Modifier){
-    val navController = LocalNavController.current
+    val navController = LocalNavControllerProvider.current
 
     Box(
         modifier = modifier
@@ -30,7 +30,7 @@ fun ProductsScreenCover(modifier: Modifier = Modifier){
             modifier = Modifier.fillMaxSize()
         )
         IconButton(
-            onClick = { navController?.popBackStack() },
+            onClick = { navController.popBackStack() },
             modifier = Modifier.align(Alignment.TopStart)
         ) {
             Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")

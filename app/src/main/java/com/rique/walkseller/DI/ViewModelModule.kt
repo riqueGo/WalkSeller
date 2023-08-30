@@ -6,6 +6,7 @@ import com.rique.walkseller.interfaces.ISellerRepository
 import com.rique.walkseller.repository.MockProductRepository
 import com.rique.walkseller.repository.MockSellerRepository
 import com.rique.walkseller.ui.viewModel.MapViewModel
+import com.rique.walkseller.ui.viewModel.OrderViewModel
 import com.rique.walkseller.ui.viewModel.ProductsViewModel
 import com.rique.walkseller.ui.viewModel.SellerBottomSheetViewModel
 import com.rique.walkseller.ui.viewModel.SellerMarkersViewModel
@@ -42,6 +43,12 @@ object ViewModelModule {
     @ViewModelScoped
     fun provideSellerBottomSheetViewModel(): SellerBottomSheetViewModel {
         return SellerBottomSheetViewModel()
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideOrderViewModel(): OrderViewModel {
+        return OrderViewModel()
     }
 
     @Provides

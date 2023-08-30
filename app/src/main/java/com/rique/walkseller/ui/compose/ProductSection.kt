@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -17,11 +15,13 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,22 +30,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rique.walkseller.DI.LocalOrderViewModelProvider
+import com.rique.walkseller.DI.LocalSheetStateProvider
 import com.rique.walkseller.R
 import com.rique.walkseller.domain.Product
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProductsList(products: List<Product>, modifier: Modifier = Modifier) {
-    LazyColumn(
-        modifier = modifier
-    ) {
-        items(products) { product ->
-            ProductSection(
-                product = product,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            )
-        }
+    products.forEach { product ->
+        ProductSection(
+            product = product,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
     }
 }
 
@@ -91,7 +90,7 @@ fun ProductSection(product: Product, modifier: Modifier = Modifier) {
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
-                    QuantityControl()
+                    QuantityControl(product = product)
                 }
             }
         }
@@ -99,8 +98,14 @@ fun ProductSection(product: Product, modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuantityControl() {
+fun QuantityControl(product: Product) {
+    val viewModel = LocalOrderViewModelProvider.current
+    val sheetState = LocalSheetStateProvider.current
+    val state = viewModel.order.value
+    val scope = rememberCoroutineScope()
+
     Card(
         modifier = Modifier.padding(vertical = 4.dp),
         elevation = CardDefaults.cardElevation(4.dp)
@@ -110,13 +115,23 @@ fun QuantityControl() {
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             IconButton(
-                onClick = { /* TODO: Decrement quantity */ }
+                onClick = {
+                    viewModel.subtractProduct(product)
+                    if (viewModel.order.value.totalProductsQuantity == 0 && sheetState.isVisible) {
+                        scope.launch { sheetState.hide() }
+                    }
+                }
             ) {
                 Icon(imageVector = Icons.Default.Clear, contentDescription = "Decrement")
             }
-            Text(text = "1") // TODO: Display actual quantity
+            Text(text = (state.productById[product.id]?.quantity ?: 0).toString())
             IconButton(
-                onClick = { /* TODO: Increment quantity */ }
+                onClick = {
+                    viewModel.addProduct(product)
+                    if (!sheetState.isVisible){
+                        scope.launch { sheetState.partialExpand() }
+                    }
+                }
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Increment")
             }

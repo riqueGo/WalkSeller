@@ -22,9 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.rique.walkseller.DI.LocalNavControllerProvider
 import com.rique.walkseller.R
 import com.rique.walkseller.domain.Seller
-import com.rique.walkseller.navigation.LocalNavController
 import com.rique.walkseller.navigation.NavDestination
 
 @Composable
@@ -36,7 +36,7 @@ fun SellerMarkerDialog(seller: Seller, onDismiss: () -> Unit) {
 
 @Composable
 fun SellerMarkerDialogUI(seller: Seller) {
-    val navController = LocalNavController.current
+    val navController = LocalNavControllerProvider.current
 
     Card(
         elevation = CardDefaults.cardElevation(8.dp),
@@ -70,8 +70,8 @@ fun SellerMarkerDialogUI(seller: Seller) {
             FowardButton(
                 onClick = {
                     val route = NavDestination.ProductsScreen.createRoute(sellerId = seller.id)
-                    navController?.currentBackStackEntry?.savedStateHandle?.apply { set("seller", seller) }
-                    navController?.navigate(route = route)
+                    navController.currentBackStackEntry?.savedStateHandle?.apply { set("seller", seller) }
+                    navController.navigate(route = route)
                 },
                 title = stringResource(id = R.string.products),
                 contentDescription = stringResource(id = R.string.see_products),
