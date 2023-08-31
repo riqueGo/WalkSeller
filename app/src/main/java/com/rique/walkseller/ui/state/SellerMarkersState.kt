@@ -8,5 +8,5 @@ data class SellerMarkersState(
     val sellers: List<Seller> = emptyList(),
     val isOpenDialogMarker: Boolean = false,
     val setIsOpenDialogMarker: (Boolean) -> Unit = { },
-    val moveToLocation: (LatLng) -> Unit = { }
+    val moveToLocation: (LatLng, onCompletion: () -> Unit) -> Unit = { _, _ -> }
 )

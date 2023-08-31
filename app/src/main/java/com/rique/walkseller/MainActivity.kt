@@ -10,13 +10,13 @@ import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.rique.walkseller.ui.compose.MapScreen
+import com.rique.walkseller.navigation.SetupNavGraph
 import com.rique.walkseller.ui.viewModel.MapViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val viewModel: MapViewModel by viewModels()
+    private val mapViewModel: MapViewModel by viewModels()
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -29,11 +29,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun askPermissions() = when {
-        ContextCompat.checkSelfPermission(
-            this,
-            ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED -> {
+    private fun askPermissions() = when (PackageManager.PERMISSION_GRANTED) {
+        ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) -> {
             initializeMap()
         } else -> {
             requestPermissionLauncher.launch(ACCESS_FINE_LOCATION)
@@ -42,16 +39,14 @@ class MainActivity : ComponentActivity() {
 
     private fun initializeMap() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        viewModel.initMap(fusedLocationProviderClient, applicationContext)
+        mapViewModel.initMap(fusedLocationProviderClient, applicationContext)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         askPermissions()
         setContent {
-            MapScreen(
-                viewModel = viewModel
-            )
+            SetupNavGraph(mapViewModel = mapViewModel)
         }
     }
 }

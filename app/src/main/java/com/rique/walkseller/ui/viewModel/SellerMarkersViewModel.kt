@@ -20,16 +20,12 @@ class SellerMarkersViewModel @Inject constructor() : ViewModel() {
     val sellerMarkersState: State<SellerMarkersState>
         get() = _sellerMarkersState
 
-    fun initSellerMarkerState(
+    fun setInitialData(
         sellers: List<Seller>,
-        isOpenDialogMarker: Boolean,
-        setIsOpenDialogMarker: (Boolean) -> Unit,
-        moveToLocation: (LatLng) -> Unit
+        moveToLocation: (LatLng, onCompletion: () -> Unit) -> Unit
     ) {
         _sellerMarkersState.value = _sellerMarkersState.value.copy(
             sellers = sellers,
-            isOpenDialogMarker = isOpenDialogMarker,
-            setIsOpenDialogMarker = setIsOpenDialogMarker,
             moveToLocation = moveToLocation
         )
     }
@@ -38,15 +34,16 @@ class SellerMarkersViewModel @Inject constructor() : ViewModel() {
         _sellerMarkersState.value = _sellerMarkersState.value.copy(selectedSeller = seller)
     }
 
-    fun setIsOpenDialogMarker(isOpen: Boolean){
+    fun setIsOpenDialogMarker(isOpen: Boolean) {
         _sellerMarkersState.value = _sellerMarkersState.value.copy(isOpenDialogMarker = isOpen)
         _sellerMarkersState.value.setIsOpenDialogMarker(isOpen)
     }
 
-    fun onClickSellerMarker(seller: Seller) : Boolean {
-        _sellerMarkersState.value.moveToLocation(seller.position)
-        setSelectedSeller(seller)
-        setIsOpenDialogMarker(true)
+    fun onClickSellerMarker(seller: Seller): Boolean {
+        _sellerMarkersState.value.moveToLocation(seller.position) {
+            setSelectedSeller(seller)
+            setIsOpenDialogMarker(true)
+        }
         return true
     }
 }

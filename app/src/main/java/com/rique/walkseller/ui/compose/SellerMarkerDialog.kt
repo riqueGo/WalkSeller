@@ -16,16 +16,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.rique.walkseller.DI.LocalNavControllerProvider
 import com.rique.walkseller.R
-import com.rique.walkseller.utils.Utils
 import com.rique.walkseller.domain.Seller
+import com.rique.walkseller.navigation.NavDestination
 
 @Composable
 fun SellerMarkerDialog(seller: Seller, onDismiss: () -> Unit) {
@@ -36,7 +36,7 @@ fun SellerMarkerDialog(seller: Seller, onDismiss: () -> Unit) {
 
 @Composable
 fun SellerMarkerDialogUI(seller: Seller) {
-    val context = LocalContext.current
+    val navController = LocalNavControllerProvider.current
 
     Card(
         elevation = CardDefaults.cardElevation(8.dp),
@@ -68,7 +68,11 @@ fun SellerMarkerDialogUI(seller: Seller) {
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
             FowardButton(
-                onClick = { Utils.showToast(context, "Products Button was clicked") },
+                onClick = {
+                    val route = NavDestination.ProductsScreen.createRoute(sellerId = seller.id)
+                    navController.currentBackStackEntry?.savedStateHandle?.apply { set("seller", seller) }
+                    navController.navigate(route = route)
+                },
                 title = stringResource(id = R.string.products),
                 contentDescription = stringResource(id = R.string.see_products),
                 modifier = Modifier

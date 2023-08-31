@@ -1,28 +1,45 @@
-package com.rique.walkseller.ui.compose
+package com.rique.walkseller.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.rique.walkseller.R
+import com.rique.walkseller.ui.compose.CustomFloatingActionButton
+import com.rique.walkseller.ui.compose.SellerBottomSheet
+import com.rique.walkseller.ui.compose.SellerMarkers
 import com.rique.walkseller.ui.viewModel.MapViewModel
+import com.rique.walkseller.ui.viewModel.SellerBottomSheetViewModel
+import com.rique.walkseller.ui.viewModel.SellerMarkersViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(viewModel: MapViewModel) {
     val mapState = viewModel.mapState.value
     val mapPropertiesState = viewModel.mapPropertiesState.value
-    val sellerMarkersViewModel = viewModel.getSellerMarkersViewModel()
+
+    val sellerMarkersViewModel: SellerMarkersViewModel = hiltViewModel()
+    sellerMarkersViewModel.setInitialData(
+        sellers = mapState.sellers,
+        moveToLocation = { position: LatLng, onCompletion: () -> Unit ->
+            viewModel.moveToLocation(
+                position,
+                onCompletion
+            )
+        }
+    )
+
+    val sellerBottomSheetViewModel: SellerBottomSheetViewModel = hiltViewModel()
+    sellerBottomSheetViewModel.setInitialData(mapState.sellers, sellerMarkersViewModel::onClickSellerMarker)
 
     Scaffold { contentPadding ->
         Box(
@@ -35,9 +52,6 @@ fun MapScreen(viewModel: MapViewModel) {
                 properties = mapPropertiesState.mapProperties!!,
                 cameraPositionState = mapPropertiesState.cameraPositionState,
                 uiSettings = mapPropertiesState.mapUiSettings,
-                onMapLoaded = {
-                    viewModel.moveToLocation(mapState.lastKnownLocation)
-                }
             ) {
                 SellerMarkers(sellerMarkersViewModel)
             }
@@ -49,7 +63,7 @@ fun MapScreen(viewModel: MapViewModel) {
             ) {
                 CustomFloatingActionButton(
                     onClick = {
-                        viewModel.setIsOpenBottomSheet(true)
+                        sellerBottomSheetViewModel.setIsOpenBottomSheet(true)
                     },
                     drawableResId = R.drawable.shopping_basket,
                     contentDescription = stringResource(id = R.string.sellers)
@@ -63,15 +77,6 @@ fun MapScreen(viewModel: MapViewModel) {
                 )
             }
         }
-        if (mapState.isOpenBottomSheet) {
-            ModalBottomSheet(
-                onDismissRequest = {
-                    viewModel.setIsOpenBottomSheet(false)
-                },
-                sheetState = mapPropertiesState.sheetState
-            ) {
-                SellerBottomSheetContent(sellers = mapState.sellers, onClickSellerBottomSheet = viewModel::onClickSellerBottomSheet)
-            }
-        }
+        SellerBottomSheet(viewModel = sellerBottomSheetViewModel)
     }
 }

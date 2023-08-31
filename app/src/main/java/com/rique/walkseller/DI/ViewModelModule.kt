@@ -1,9 +1,14 @@
 package com.rique.walkseller.DI
 
 import android.content.Context
+import com.rique.walkseller.interfaces.IProductRepository
 import com.rique.walkseller.interfaces.ISellerRepository
+import com.rique.walkseller.repository.MockProductRepository
 import com.rique.walkseller.repository.MockSellerRepository
 import com.rique.walkseller.ui.viewModel.MapViewModel
+import com.rique.walkseller.ui.viewModel.OrderViewModel
+import com.rique.walkseller.ui.viewModel.ProductsViewModel
+import com.rique.walkseller.ui.viewModel.SellerBottomSheetViewModel
 import com.rique.walkseller.ui.viewModel.SellerMarkersViewModel
 import dagger.Module
 import dagger.Provides
@@ -18,19 +23,43 @@ object ViewModelModule {
 
     @Provides
     @ViewModelScoped
-    fun provideMapViewModel(sellerRepository: ISellerRepository, sellerMarkersViewModel: SellerMarkersViewModel): MapViewModel {
-        return MapViewModel(sellerRepository, sellerMarkersViewModel)
+    fun provideMapViewModel(sellerRepository: ISellerRepository): MapViewModel {
+        return MapViewModel(sellerRepository)
     }
 
     @Provides
     @ViewModelScoped
-    fun provideSellerRepository(@ApplicationContext context: Context): ISellerRepository {
-        return MockSellerRepository(context)
+    fun provideProductsViewModel(productRepository: IProductRepository): ProductsViewModel {
+        return ProductsViewModel(productRepository)
     }
 
     @Provides
     @ViewModelScoped
     fun provideSellerMarkersViewModel(): SellerMarkersViewModel {
         return SellerMarkersViewModel()
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideSellerBottomSheetViewModel(): SellerBottomSheetViewModel {
+        return SellerBottomSheetViewModel()
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideOrderViewModel(): OrderViewModel {
+        return OrderViewModel()
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideProductRepository(@ApplicationContext context: Context): IProductRepository {
+        return MockProductRepository(context)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideSellerRepository(@ApplicationContext context: Context): ISellerRepository {
+        return MockSellerRepository(context)
     }
 }
