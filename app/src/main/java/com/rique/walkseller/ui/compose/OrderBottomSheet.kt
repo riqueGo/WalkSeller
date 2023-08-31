@@ -1,26 +1,33 @@
 package com.rique.walkseller.ui.compose
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rique.walkseller.domain.Order
+import com.rique.walkseller.ui.viewModel.OrderViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderBottomSheetContent(
-    state: Order
+    orderViewModel: OrderViewModel,
+    sheetState: SheetState
 ) {
-    val formattedTotalPrice = String.format("%.2f", state.totalOrderPrice)
-    Box(
+    val orderState = orderViewModel.orderState.value
+    val orderBottomSheetState = orderViewModel.orderBottomSheetState.value
+    val formattedTotalPrice = String.format("%.2f", orderState.totalOrderPrice)
+    val scope = rememberCoroutineScope()
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
@@ -36,17 +43,24 @@ fun OrderBottomSheetContent(
                     fontSize = 18.sp
                 )
                 Text(
-                    text = "Total Items: ${state.totalProductsQuantity}",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
+                    text = "Total Items: ${orderState.totalProductsQuantity}",
+                    fontWeight = FontWeight.Light,
+                    fontSize = 16.sp
                 )
             }
             Button(
-                onClick = {},
+                onClick = {
+                    orderViewModel.setIsOpenOrderDetails(!orderBottomSheetState.isOpenOrderDetails)
+                    orderViewModel.adjustSheetBottomOrderDetailHeight()
+                },
                 modifier = Modifier.padding(start = 16.dp)
             ) {
-                Text(text = "Details")
+                Text(text = if (orderBottomSheetState.isOpenOrderDetails) "Call" else "Details")
             }
+        }
+        if (orderBottomSheetState.isOpenOrderDetails) {
+            Text(text = "Hello World")
+            Text(text = "Hi")
         }
     }
 }

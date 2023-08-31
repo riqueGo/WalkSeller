@@ -15,6 +15,7 @@ import com.rique.walkseller.domain.Seller
 import com.rique.walkseller.ui.screen.MapScreen
 import com.rique.walkseller.ui.screen.ProductsScreen
 import com.rique.walkseller.ui.viewModel.MapViewModel
+import com.rique.walkseller.ui.viewModel.OrderViewModel
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
@@ -35,8 +36,12 @@ fun SetupNavGraph(mapViewModel: MapViewModel) {
             ) {
                 val seller = navController.previousBackStackEntry?.savedStateHandle?.get<Seller>("seller")
                 if (seller != null) {
+                    val orderViewModel: OrderViewModel = hiltViewModel()
+                    orderViewModel.setInitialData(sellerId = seller.id, customerLocation = mapViewModel.mapState.value.lastKnownLocation)
+
                     ProductsScreen(
                         viewModel = hiltViewModel(),
+                        orderViewModel = orderViewModel,
                         seller = seller
                     )
                 }

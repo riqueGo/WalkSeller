@@ -101,9 +101,9 @@ fun ProductSection(product: Product, modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuantityControl(product: Product) {
-    val viewModel = LocalOrderViewModelProvider.current
+    val orderViewModel = LocalOrderViewModelProvider.current
     val sheetState = LocalSheetStateProvider.current
-    val state = viewModel.order.value
+    val orderState = orderViewModel.orderState.value
     val scope = rememberCoroutineScope()
 
     Card(
@@ -116,20 +116,23 @@ fun QuantityControl(product: Product) {
         ) {
             IconButton(
                 onClick = {
-                    viewModel.subtractProduct(product)
-                    if (viewModel.order.value.totalProductsQuantity == 0 && sheetState.isVisible) {
+                    orderViewModel.subtractProduct(product)
+                    if (orderViewModel.orderState.value.totalProductsQuantity == 0 && sheetState.isVisible) {
                         scope.launch { sheetState.hide() }
                     }
                 }
             ) {
                 Icon(imageVector = Icons.Default.Clear, contentDescription = "Decrement")
             }
-            Text(text = (state.productById[product.id]?.quantity ?: 0).toString())
+            Text(text = (orderState.productById[product.id]?.quantity ?: 0).toString())
             IconButton(
                 onClick = {
-                    viewModel.addProduct(product)
+                    orderViewModel.addProduct(product)
+                    orderViewModel.adjustSheetBottomOrderDetailHeight()
                     if (!sheetState.isVisible){
-                        scope.launch { sheetState.partialExpand() }
+                        scope.launch {
+                            sheetState.partialExpand()
+                        }
                     }
                 }
             ) {

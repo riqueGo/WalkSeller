@@ -16,5 +16,14 @@
     },
     "title": "Seller 2",
     "description": "Description of Seller 2"
+  },
+    {
+    "id": "d3847265-4e15-4c44-9a8c-721fca5cc3a8",
+    "position": {
+      "latitude": -8.056454169911026,
+      "longitude": -34.952022831847664
+    },
+    "title": "Seller 3",
+    "description": "Description of Seller 3"
   }
 ]

@@ -19,7 +19,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.rique.walkseller.DI.LocalOrderViewModelProvider
 import com.rique.walkseller.DI.LocalSheetStateProvider
 import com.rique.walkseller.domain.Seller
@@ -34,12 +33,12 @@ import com.rique.walkseller.ui.viewModel.ProductsViewModel
 @Composable
 fun ProductsScreen(
     viewModel: ProductsViewModel,
-    seller: Seller
+    orderViewModel: OrderViewModel,
+    seller: Seller,
 ) {
     val productsState = viewModel.productsState.value
-    val orderViewModel: OrderViewModel = hiltViewModel()
 
-    val orderState = orderViewModel.order.value
+    val orderState = orderViewModel.orderState.value
     val sheetState = rememberStandardBottomSheetState(
         initialValue = SheetValue.Hidden,
         skipHiddenState = false
@@ -53,8 +52,8 @@ fun ProductsScreen(
         sheetDragHandle = null,
         sheetSwipeEnabled = false,
         sheetTonalElevation = 96.dp,
-        sheetPeekHeight = 96.dp,
-        sheetContent = { OrderBottomSheetContent(orderState) },
+        sheetPeekHeight = orderViewModel.orderBottomSheetState.value.sheetHeight,
+        sheetContent = { OrderBottomSheetContent(orderViewModel, sheetState) },
         scaffoldState = scaffoldState
     ) {
         Column(

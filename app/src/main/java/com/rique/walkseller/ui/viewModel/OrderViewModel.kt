@@ -1,24 +1,49 @@
 package com.rique.walkseller.ui.viewModel
 
+import android.location.Location
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.maps.model.LatLng
 import com.rique.walkseller.domain.Order
 import com.rique.walkseller.domain.Product
 import com.rique.walkseller.dto.ProductDto
+import com.rique.walkseller.ui.state.OrderBottomSheetState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class OrderViewModel @Inject constructor() : ViewModel() {
-    private val _order = mutableStateOf(Order())
+    private val _orderState = mutableStateOf(Order())
+    private val _orderBottomSheetState = mutableStateOf(OrderBottomSheetState())
+    private val expandedOrderBottomSheetHeight = 96.dp
+    private var expandedOrderDetailsHeight = (20 * _orderState.value.productById.size).dp + expandedOrderBottomSheetHeight
 
-    val order: State<Order>
-        get() = _order
+    val orderState: State<Order>
+        get() = _orderState
 
-    fun setInitalData(sellerId: String, customerLocation: LatLng) {
-        _order.value = _order.value.copy(sellerId = sellerId, customerLocation = customerLocation)
+    val orderBottomSheetState: State<OrderBottomSheetState>
+        get() = _orderBottomSheetState
+
+    fun setInitialData(sellerId: String, customerLocation: Location?) {
+        _orderState.value = _orderState.value.copy(sellerId = sellerId, customerLocation = customerLocation)
+    }
+
+    fun setIsOpenOrderDetails(isOpen: Boolean){
+        _orderBottomSheetState.value = _orderBottomSheetState.value.copy(isOpenOrderDetails = isOpen)
+    }
+
+    fun setSheetHeight(height: Dp){
+        _orderBottomSheetState.value = _orderBottomSheetState.value.copy(sheetHeight = height)
+    }
+
+    fun adjustSheetBottomOrderDetailHeight() {
+        if (_orderBottomSheetState.value.isOpenOrderDetails && _orderBottomSheetState.value.sheetHeight != expandedOrderDetailsHeight) {
+            setSheetHeight(expandedOrderDetailsHeight)
+        } else if (_orderBottomSheetState.value.sheetHeight != expandedOrderBottomSheetHeight){
+            setSheetHeight(expandedOrderBottomSheetHeight)
+        }
     }
 
     private fun setOrderValues(
@@ -26,7 +51,7 @@ class OrderViewModel @Inject constructor() : ViewModel() {
         totalProductsQuantity: Int,
         totalOrderPrice: Double
     ) {
-        _order.value = _order.value.copy(
+        _orderState.value = _orderState.value.copy(
             productById = productById,
             totalProductsQuantity = totalProductsQuantity,
             totalOrderPrice = totalOrderPrice
@@ -34,7 +59,7 @@ class OrderViewModel @Inject constructor() : ViewModel() {
     }
 
     fun addProduct(product: Product){
-        val existingProduct = _order.value.productById[product.id]
+        val existingProduct = _orderState.value.productById[product.id]
 
         val updatedProductDto =
             existingProduct?.copy(
@@ -49,14 +74,14 @@ class OrderViewModel @Inject constructor() : ViewModel() {
                 )
 
         setOrderValues(
-            productById = _order.value.productById + (product.id to updatedProductDto),
-            totalProductsQuantity = _order.value.totalProductsQuantity + 1,
-            totalOrderPrice = _order.value.totalOrderPrice + product.price
+            productById = _orderState.value.productById + (product.id to updatedProductDto),
+            totalProductsQuantity = _orderState.value.totalProductsQuantity + 1,
+            totalOrderPrice = _orderState.value.totalOrderPrice + product.price
         )
     }
 
     fun subtractProduct(product: Product) {
-        val currentProductDto = _order.value.productById[product.id]
+        val currentProductDto = _orderState.value.productById[product.id]
             ?: return // Product not in the order
 
         val updatedQuantity = currentProductDto.quantity - 1
@@ -66,15 +91,15 @@ class OrderViewModel @Inject constructor() : ViewModel() {
         )
 
         val updatedProductById = if(updatedQuantity <= 0){
-            _order.value.productById - product.id
+            _orderState.value.productById - product.id
         } else {
-            _order.value.productById + (product.id to updatedProductDto)
+            _orderState.value.productById + (product.id to updatedProductDto)
         }
 
         setOrderValues(
             productById = updatedProductById,
-            totalProductsQuantity = _order.value.totalProductsQuantity - 1,
-            totalOrderPrice = _order.value.totalOrderPrice - product.price
+            totalProductsQuantity = _orderState.value.totalProductsQuantity - 1,
+            totalOrderPrice = _orderState.value.totalOrderPrice - product.price
         )
     }
 }
