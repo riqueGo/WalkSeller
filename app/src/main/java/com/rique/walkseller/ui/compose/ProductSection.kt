@@ -21,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -117,8 +118,9 @@ fun QuantityControl(product: Product) {
             IconButton(
                 onClick = {
                     orderViewModel.subtractProduct(product)
+                    orderViewModel.adjustSheetBottomOrderDetailHeight()
                     if (orderViewModel.orderState.value.totalProductsQuantity == 0 && sheetState.isVisible) {
-                        scope.launch { sheetState.hide() }
+                        orderViewModel.setIsOpenOrderDetails(false)
                     }
                 }
             ) {
@@ -129,7 +131,7 @@ fun QuantityControl(product: Product) {
                 onClick = {
                     orderViewModel.addProduct(product)
                     orderViewModel.adjustSheetBottomOrderDetailHeight()
-                    if (!sheetState.isVisible){
+                    if (!sheetState.isVisible) {
                         scope.launch {
                             sheetState.partialExpand()
                         }
@@ -138,6 +140,11 @@ fun QuantityControl(product: Product) {
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Increment")
             }
+        }
+    }
+    LaunchedEffect(orderViewModel.orderState.value.totalProductsQuantity) {
+        if (orderViewModel.orderState.value.totalProductsQuantity == 0 && sheetState.isVisible) {
+            scope.launch { sheetState.hide() }
         }
     }
 }

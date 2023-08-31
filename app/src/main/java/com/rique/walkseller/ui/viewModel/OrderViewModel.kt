@@ -18,7 +18,6 @@ class OrderViewModel @Inject constructor() : ViewModel() {
     private val _orderState = mutableStateOf(Order())
     private val _orderBottomSheetState = mutableStateOf(OrderBottomSheetState())
     private val expandedOrderBottomSheetHeight = 96.dp
-    private var expandedOrderDetailsHeight = (20 * _orderState.value.productById.size).dp + expandedOrderBottomSheetHeight
 
     val orderState: State<Order>
         get() = _orderState
@@ -38,10 +37,16 @@ class OrderViewModel @Inject constructor() : ViewModel() {
         _orderBottomSheetState.value = _orderBottomSheetState.value.copy(sheetHeight = height)
     }
 
+    fun getExpandedOrderBottomSheetHeight(): Dp {
+        return (20 * _orderState.value.productById.size).dp + expandedOrderBottomSheetHeight
+    }
+
     fun adjustSheetBottomOrderDetailHeight() {
+        val expandedOrderDetailsHeight = getExpandedOrderBottomSheetHeight()
+
         if (_orderBottomSheetState.value.isOpenOrderDetails && _orderBottomSheetState.value.sheetHeight != expandedOrderDetailsHeight) {
             setSheetHeight(expandedOrderDetailsHeight)
-        } else if (_orderBottomSheetState.value.sheetHeight != expandedOrderBottomSheetHeight){
+        } else if (!_orderBottomSheetState.value.isOpenOrderDetails && _orderBottomSheetState.value.sheetHeight != expandedOrderBottomSheetHeight){
             setSheetHeight(expandedOrderBottomSheetHeight)
         }
     }

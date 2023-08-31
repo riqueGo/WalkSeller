@@ -53,7 +53,7 @@ fun ProductsScreen(
         sheetSwipeEnabled = false,
         sheetTonalElevation = 96.dp,
         sheetPeekHeight = orderViewModel.orderBottomSheetState.value.sheetHeight,
-        sheetContent = { OrderBottomSheetContent(orderViewModel, sheetState) },
+        sheetContent = { OrderBottomSheetContent(orderViewModel) },
         scaffoldState = scaffoldState
     ) {
         Column(
@@ -84,7 +84,7 @@ fun ProductsScreen(
                 )
             }
             if (orderState.totalProductsQuantity > 0){
-                Box(modifier = Modifier.height(96.dp))
+                Box(modifier = Modifier.height(orderViewModel.getExpandedOrderBottomSheetHeight()))
             }
         }
         LaunchedEffect(seller.id) {
