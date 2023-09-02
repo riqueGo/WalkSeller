@@ -67,7 +67,7 @@ fun SellerBottomSheetCard(seller: Seller, onClickPositionSeller: () -> Unit) {
         ) {
             Image(
                 painter = painterResource(id = R.drawable.product),
-                contentDescription = seller.title,
+                contentDescription = seller.name,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(60.dp)
@@ -76,7 +76,7 @@ fun SellerBottomSheetCard(seller: Seller, onClickPositionSeller: () -> Unit) {
             Spacer(modifier = Modifier.width(16.dp))
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
-                    text = seller.title, fontWeight = FontWeight.Bold, fontSize = 16.sp
+                    text = seller.name, fontWeight = FontWeight.Bold, fontSize = 16.sp
                 )
                 Text(text = seller.description)
             }

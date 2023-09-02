@@ -72,8 +72,13 @@ class MapViewModel @Inject constructor(
     }
 
     private fun loadSellers() {
-        val sellers = sellerRepository.getSellers()
-        setSellers(sellers)
+        viewModelScope.launch {
+            while (true) {
+                val sellers = sellerRepository.getSellers()
+                setSellers(sellers)
+                kotlinx.coroutines.delay(20000)
+            }
+        }
     }
 
     fun initMap(fusedLocationProviderClient: FusedLocationProviderClient, context: Context) {

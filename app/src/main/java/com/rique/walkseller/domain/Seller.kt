@@ -8,6 +8,6 @@ import kotlinx.android.parcel.Parcelize
 data class Seller(
     val id: String,
     val position: LatLng,
-    val title: String,
+    val name: String,
     val description: String
 ) : Parcelable

@@ -48,14 +48,14 @@ fun SellerMarkerDialogUI(seller: Seller) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Image(
                 painter = painterResource(id = R.drawable.product),
-                contentDescription = seller.title,
+                contentDescription = seller.name,
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
             )
             Text(
-                text = seller.title,
+                text = seller.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)

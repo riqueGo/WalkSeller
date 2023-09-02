@@ -35,7 +35,7 @@ fun SellerSection(seller: Seller, modifier: Modifier = Modifier){
             modifier = Modifier
                 .weight(1f)
         ) {
-            Text(text = seller.title, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Text(text = seller.name, fontWeight = FontWeight.Bold, fontSize = 20.sp)
             Text(text = seller.description, modifier = Modifier.padding(vertical = 8.dp))
         }
         Box(

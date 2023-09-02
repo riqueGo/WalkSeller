@@ -5,7 +5,7 @@
       "latitude": -7.9857217923868165,
       "longitude": -34.8407609263523
     },
-    "title": "Seller 1",
+    "name": "Seller 1",
     "description": "Description of Seller 1"
   },
   {
@@ -14,7 +14,7 @@
       "latitude": -7.986808069602836,
       "longitude": -34.841345948073275
     },
-    "title": "Seller 2",
+    "name": "Seller 2",
     "description": "Description of Seller 2"
   },
     {
@@ -23,7 +23,7 @@
       "latitude": -8.056454169911026,
       "longitude": -34.952022831847664
     },
-    "title": "Seller 3",
+    "name": "Seller 3",
     "description": "Description of Seller 3"
   }
 ]
