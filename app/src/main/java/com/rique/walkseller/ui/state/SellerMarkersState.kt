@@ -5,7 +5,7 @@ import com.rique.walkseller.domain.Seller
 
 data class SellerMarkersState(
     val selectedSeller: Seller? = null,
-    val sellers: List<Seller> = emptyList(),
+    val sellers: Collection<Seller> = emptyList(),
     val isOpenDialogMarker: Boolean = false,
     val setIsOpenDialogMarker: (Boolean) -> Unit = { },
     val moveToLocation: (LatLng, onCompletion: () -> Unit) -> Unit = { _, _ -> }

@@ -19,7 +19,7 @@ class SellerBottomSheetViewModel @Inject constructor() : ViewModel() {
     val sellerBottomSheetState: State<SellerBottomSheetState>
         get() = _sellerBottomSheetState
 
-    fun setInitialData(sellers: List<Seller>, onClickPositionSeller: (Seller) -> Unit) {
+    fun setInitialData(sellers: Collection<Seller>, onClickPositionSeller: (Seller) -> Unit) {
         _sellerBottomSheetState.value = _sellerBottomSheetState.value.copy(
             sellers = sellers,
             onClickPositionSeller = onClickPositionSeller
