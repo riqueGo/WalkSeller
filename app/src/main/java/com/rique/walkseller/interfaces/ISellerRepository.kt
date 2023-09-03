@@ -1,7 +1,8 @@
 package com.rique.walkseller.interfaces
 
 import com.rique.walkseller.domain.Seller
+import kotlinx.coroutines.flow.Flow
 
 interface ISellerRepository {
-    suspend fun getSellers(): List<Seller>
+    fun getSellers(): Flow<Collection<Seller>>
 }

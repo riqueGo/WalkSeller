@@ -4,7 +4,7 @@ import com.rique.walkseller.domain.Seller
 
 data class SellerBottomSheetState(
     val isOpenBottomSheet: Boolean = false,
-    val sellers: List<Seller> = emptyList(),
+    val sellers: Collection<Seller> = emptyList(),
     val onClickPositionSeller: (Seller) -> Unit = {},
     val navigateToSellerProducts: (Seller) -> Unit = {}
 )

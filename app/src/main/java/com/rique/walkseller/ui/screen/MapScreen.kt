@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,18 +29,19 @@ fun MapScreen(viewModel: MapViewModel) {
     val mapPropertiesState = viewModel.mapPropertiesState.value
 
     val sellerMarkersViewModel: SellerMarkersViewModel = hiltViewModel()
+    val sellers = mapState.sellers.collectAsState(initial = emptyList()).value
+
     sellerMarkersViewModel.setInitialData(
-        sellers = mapState.sellers,
-        moveToLocation = { position: LatLng, onCompletion: () -> Unit ->
-            viewModel.moveToLocation(
-                position,
-                onCompletion
-            )
-        }
-    )
+        sellers = sellers
+    ) { position: LatLng, onCompletion: () -> Unit ->
+        viewModel.moveToLocation(
+            position,
+            onCompletion
+        )
+    }
 
     val sellerBottomSheetViewModel: SellerBottomSheetViewModel = hiltViewModel()
-    sellerBottomSheetViewModel.setInitialData(mapState.sellers, sellerMarkersViewModel::onClickSellerMarker)
+    sellerBottomSheetViewModel.setInitialData(sellers, sellerMarkersViewModel::onClickSellerMarker)
 
     Scaffold { contentPadding ->
         Box(

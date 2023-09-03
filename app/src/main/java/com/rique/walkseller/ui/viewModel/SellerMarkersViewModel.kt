@@ -21,7 +21,7 @@ class SellerMarkersViewModel @Inject constructor() : ViewModel() {
         get() = _sellerMarkersState
 
     fun setInitialData(
-        sellers: List<Seller>,
+        sellers: Collection<Seller>,
         moveToLocation: (LatLng, onCompletion: () -> Unit) -> Unit
     ) {
         _sellerMarkersState.value = _sellerMarkersState.value.copy(

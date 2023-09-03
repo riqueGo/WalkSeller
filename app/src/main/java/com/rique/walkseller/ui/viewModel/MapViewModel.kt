@@ -19,12 +19,16 @@ import com.google.maps.android.compose.MapProperties
 import com.rique.walkseller.R
 import com.rique.walkseller.utils.Constants
 import com.rique.walkseller.utils.Constants.TAG
-import com.rique.walkseller.utils.Constants.TARGET_ZOOM
 import com.rique.walkseller.interfaces.ISellerRepository
 import com.rique.walkseller.ui.state.MapState
 import com.rique.walkseller.domain.Seller
 import com.rique.walkseller.ui.state.MapPropertiesState
+import com.rique.walkseller.utils.Constants.DURATION_POS_CAMERA
+import com.rique.walkseller.utils.Constants.TARGET_ZOOM
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -52,7 +56,7 @@ class MapViewModel @Inject constructor(
         _mapState.value = _mapState.value.copy(lastKnownLocation = location)
     }
 
-    fun setSellers(sellers: List<Seller>) {
+    fun setSellers(sellers: Flow<Collection<Seller>>) {
         _mapState.value = _mapState.value.copy(sellers = sellers)
     }
 
@@ -72,13 +76,8 @@ class MapViewModel @Inject constructor(
     }
 
     private fun loadSellers() {
-        viewModelScope.launch {
-            while (true) {
-                val sellers = sellerRepository.getSellers()
-                setSellers(sellers)
-                kotlinx.coroutines.delay(20000)
-            }
-        }
+        val sellers = sellerRepository.getSellers().flowOn(Dispatchers.IO)
+        setSellers(sellers)
     }
 
     fun initMap(fusedLocationProviderClient: FusedLocationProviderClient, context: Context) {
@@ -104,27 +103,27 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    private fun calculateCameraUpdate(location: LatLng, zoom: Float): CameraUpdate {
+    private fun calculateCameraUpdate(location: LatLng): CameraUpdate {
         val cameraPosition = CameraPosition.Builder()
             .target(location)
-            .zoom(zoom)
+            .zoom(TARGET_ZOOM)
             .build()
         return CameraUpdateFactory.newCameraPosition(cameraPosition)
     }
 
     fun moveToLocation(location: Location?, onCompletion: () -> Unit = {}) {
         location?.let {
-            val cameraUpdate = calculateCameraUpdate(it.toLatLng(), TARGET_ZOOM)
+            val cameraUpdate = calculateCameraUpdate(it.toLatLng())
             viewModelScope.launch {
-                _mapPropertiesState.value.cameraPositionState.animate(cameraUpdate, 500)
+                _mapPropertiesState.value.cameraPositionState.animate(cameraUpdate, DURATION_POS_CAMERA)
             }.invokeOnCompletion { onCompletion() }
         }
     }
 
     fun moveToLocation(location: LatLng, onCompletion: () -> Unit = {}) {
-        val cameraUpdate = calculateCameraUpdate(location, TARGET_ZOOM)
+        val cameraUpdate = calculateCameraUpdate(location)
         viewModelScope.launch {
-            _mapPropertiesState.value.cameraPositionState.animate(cameraUpdate, 500)
+            _mapPropertiesState.value.cameraPositionState.animate(cameraUpdate, DURATION_POS_CAMERA)
         }.invokeOnCompletion { onCompletion() }
     }
 
