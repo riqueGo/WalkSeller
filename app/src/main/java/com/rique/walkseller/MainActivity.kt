@@ -15,11 +15,14 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.FirebaseApp
 import com.rique.walkseller.navigation.SetupNavGraph
 import com.rique.walkseller.ui.viewModel.MapViewModel
+import com.rique.walkseller.ui.viewModel.ProductsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val mapViewModel: MapViewModel by viewModels()
+    private val productsViewModel: ProductsViewModel by viewModels()
+
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -51,7 +54,7 @@ class MainActivity : ComponentActivity() {
         FirebaseApp.initializeApp(this)
         askPermissions()
         setContent {
-            SetupNavGraph(mapViewModel = mapViewModel)
+            SetupNavGraph(mapViewModel = mapViewModel, productsViewModel = productsViewModel)
         }
     }
 }
