@@ -18,7 +18,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.MapProperties
 import com.rique.walkseller.R
 import com.rique.walkseller.utils.Constants
-import com.rique.walkseller.utils.Constants.TAG
+import com.rique.walkseller.utils.Constants.APP_TAG
 import com.rique.walkseller.interfaces.ISellerRepository
 import com.rique.walkseller.ui.state.MapState
 import com.rique.walkseller.domain.Seller
@@ -76,6 +76,7 @@ class MapViewModel @Inject constructor(
     }
 
     private fun loadSellers() {
+        sellerRepository.startListener()
         val sellers = sellerRepository.getSellers().flowOn(Dispatchers.IO)
         setSellers(sellers)
     }
@@ -89,6 +90,10 @@ class MapViewModel @Inject constructor(
         }
     }
 
+    fun closeMap() {
+        sellerRepository.stopListener()
+    }
+
     private fun setDeviceLocation(fusedLocationProviderClient: FusedLocationProviderClient) {
         try {
             val locationResult = fusedLocationProviderClient.lastLocation
@@ -99,7 +104,7 @@ class MapViewModel @Inject constructor(
                 }
             }
         } catch (e: SecurityException) {
-            Log.e(TAG, e.message.toString())
+            Log.e(APP_TAG, e.message.toString())
         }
     }
 

@@ -22,20 +22,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.rique.walkseller.DI.LocalNavControllerProvider
+import com.rique.walkseller.di.LocalNavControllerProvider
+import com.rique.walkseller.di.LocalSellerMarkersViewModelProvider
 import com.rique.walkseller.R
-import com.rique.walkseller.domain.Seller
-import com.rique.walkseller.navigation.NavDestination
 
 @Composable
-fun SellerMarkerDialog(seller: Seller, onDismiss: () -> Unit) {
+fun SellerMarkerDialog(onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
-        SellerMarkerDialogUI(seller)
+        SellerMarkerDialogUI()
     }
 }
 
 @Composable
-fun SellerMarkerDialogUI(seller: Seller) {
+fun SellerMarkerDialogUI() {
+    val sellerMarkersViewModel = LocalSellerMarkersViewModelProvider.current
+    val seller = sellerMarkersViewModel.sellerMarkersState.value.selectedSeller!!
     val navController = LocalNavControllerProvider.current
 
     Card(
@@ -69,9 +70,7 @@ fun SellerMarkerDialogUI(seller: Seller) {
             )
             FowardButton(
                 onClick = {
-                    val route = NavDestination.ProductsScreen.createRoute(sellerId = seller.id)
-                    navController.currentBackStackEntry?.savedStateHandle?.apply { set("seller", seller) }
-                    navController.navigate(route = route)
+                    sellerMarkersViewModel.navigateToProducts(navController = navController, seller = seller)
                 },
                 title = stringResource(id = R.string.products),
                 contentDescription = stringResource(id = R.string.see_products),

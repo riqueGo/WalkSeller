@@ -4,8 +4,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import com.google.android.gms.maps.model.LatLng
 import com.rique.walkseller.domain.Seller
+import com.rique.walkseller.navigation.NavDestination
 import com.rique.walkseller.ui.state.SellerMarkersState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -22,11 +24,13 @@ class SellerMarkersViewModel @Inject constructor() : ViewModel() {
 
     fun setInitialData(
         sellers: Collection<Seller>,
-        moveToLocation: (LatLng, onCompletion: () -> Unit) -> Unit
+        moveToLocation: (LatLng, onCompletion: () -> Unit) -> Unit,
+        closeMap: () -> Unit
     ) {
         _sellerMarkersState.value = _sellerMarkersState.value.copy(
             sellers = sellers,
-            moveToLocation = moveToLocation
+            moveToLocation = moveToLocation,
+            closeMap = closeMap
         )
     }
 
@@ -36,7 +40,6 @@ class SellerMarkersViewModel @Inject constructor() : ViewModel() {
 
     fun setIsOpenDialogMarker(isOpen: Boolean) {
         _sellerMarkersState.value = _sellerMarkersState.value.copy(isOpenDialogMarker = isOpen)
-        _sellerMarkersState.value.setIsOpenDialogMarker(isOpen)
     }
 
     fun onClickSellerMarker(seller: Seller): Boolean {
@@ -45,5 +48,14 @@ class SellerMarkersViewModel @Inject constructor() : ViewModel() {
             setIsOpenDialogMarker(true)
         }
         return true
+    }
+
+    fun navigateToProducts(navController: NavController, seller: Seller) {
+        setIsOpenDialogMarker(isOpen = false)
+        _sellerMarkersState.value.closeMap()
+
+        val route = NavDestination.ProductsScreen.createRoute(sellerId = seller.id)
+        navController.currentBackStackEntry?.savedStateHandle?.apply { set("seller", seller) }
+        navController.navigate(route = route)
     }
 }

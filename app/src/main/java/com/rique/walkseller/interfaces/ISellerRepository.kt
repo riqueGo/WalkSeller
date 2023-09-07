@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ISellerRepository {
     fun getSellers(): Flow<Collection<Seller>>
+    fun startListener()
+    fun stopListener()
 }

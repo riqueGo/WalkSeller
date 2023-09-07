@@ -1,10 +1,9 @@
-package com.rique.walkseller.DI
+package com.rique.walkseller.di
 
-import android.content.Context
 import com.google.firebase.database.FirebaseDatabase
 import com.rique.walkseller.interfaces.IProductRepository
 import com.rique.walkseller.interfaces.ISellerRepository
-import com.rique.walkseller.repository.MockProductRepository
+import com.rique.walkseller.repository.ProductRepository
 import com.rique.walkseller.repository.SellerRepository
 import com.rique.walkseller.ui.viewModel.MapViewModel
 import com.rique.walkseller.ui.viewModel.OrderViewModel
@@ -15,7 +14,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
@@ -54,13 +52,6 @@ object ViewModelModule {
 
     @Provides
     @ViewModelScoped
-    fun provideProductRepository(@ApplicationContext context: Context): IProductRepository {
-        return MockProductRepository(context)
-    }
-
-
-    @Provides
-    @ViewModelScoped
     fun provideFirebaseDatabase(): FirebaseDatabase {
         return FirebaseDatabase.getInstance()
     }
@@ -69,5 +60,11 @@ object ViewModelModule {
     @ViewModelScoped
     fun provideSellerRepository(): ISellerRepository {
         return SellerRepository()
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideProductRepository(): IProductRepository {
+        return ProductRepository()
     }
 }

@@ -10,16 +10,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.rique.walkseller.DI.LocalNavControllerProvider
+import com.rique.walkseller.di.LocalNavControllerProvider
 import com.rique.walkseller.domain.Seller
 import com.rique.walkseller.ui.screen.MapScreen
 import com.rique.walkseller.ui.screen.ProductsScreen
 import com.rique.walkseller.ui.viewModel.MapViewModel
 import com.rique.walkseller.ui.viewModel.OrderViewModel
+import com.rique.walkseller.ui.viewModel.ProductsViewModel
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
-fun SetupNavGraph(mapViewModel: MapViewModel) {
+fun SetupNavGraph(mapViewModel: MapViewModel, productsViewModel: ProductsViewModel) {
     val navController = rememberNavController()
 
     CompositionLocalProvider(LocalNavControllerProvider provides navController) {
@@ -40,7 +41,7 @@ fun SetupNavGraph(mapViewModel: MapViewModel) {
                     orderViewModel.setInitialData(sellerId = seller.id, customerLocation = mapViewModel.mapState.value.lastKnownLocation)
 
                     ProductsScreen(
-                        viewModel = hiltViewModel(),
+                        viewModel = productsViewModel,
                         orderViewModel = orderViewModel,
                         seller = seller
                     )

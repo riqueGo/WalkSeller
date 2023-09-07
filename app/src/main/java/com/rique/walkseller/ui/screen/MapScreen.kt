@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
+import com.rique.walkseller.di.LocalSellerMarkersViewModelProvider
 import com.rique.walkseller.R
 import com.rique.walkseller.ui.compose.CustomFloatingActionButton
 import com.rique.walkseller.ui.compose.SellerBottomSheet
@@ -32,13 +34,15 @@ fun MapScreen(viewModel: MapViewModel) {
     val sellers = mapState.sellers.collectAsState(initial = emptyList()).value
 
     sellerMarkersViewModel.setInitialData(
-        sellers = sellers
-    ) { position: LatLng, onCompletion: () -> Unit ->
-        viewModel.moveToLocation(
-            position,
-            onCompletion
-        )
-    }
+        sellers = sellers,
+        moveToLocation = { position: LatLng, onCompletion: () -> Unit ->
+            viewModel.moveToLocation(
+                position,
+                onCompletion
+            )
+        },
+        closeMap = viewModel::closeMap
+    )
 
     val sellerBottomSheetViewModel: SellerBottomSheetViewModel = hiltViewModel()
     sellerBottomSheetViewModel.setInitialData(sellers, sellerMarkersViewModel::onClickSellerMarker)
@@ -55,7 +59,11 @@ fun MapScreen(viewModel: MapViewModel) {
                 cameraPositionState = mapPropertiesState.cameraPositionState,
                 uiSettings = mapPropertiesState.mapUiSettings,
             ) {
-                SellerMarkers(sellerMarkersViewModel)
+                CompositionLocalProvider(
+                    LocalSellerMarkersViewModelProvider provides sellerMarkersViewModel
+                ) {
+                    SellerMarkers()
+                }
             }
             Column(
                 modifier = Modifier
