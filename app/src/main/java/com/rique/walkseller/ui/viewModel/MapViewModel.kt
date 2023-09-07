@@ -76,6 +76,7 @@ class MapViewModel @Inject constructor(
     }
 
     private fun loadSellers() {
+        sellerRepository.startListener()
         val sellers = sellerRepository.getSellers().flowOn(Dispatchers.IO)
         setSellers(sellers)
     }
@@ -87,6 +88,10 @@ class MapViewModel @Inject constructor(
             setIsMapPropertiesLoaded(true)
             setDeviceLocation(fusedLocationProviderClient)
         }
+    }
+
+    fun closeMap() {
+        sellerRepository.stopListener()
     }
 
     private fun setDeviceLocation(fusedLocationProviderClient: FusedLocationProviderClient) {

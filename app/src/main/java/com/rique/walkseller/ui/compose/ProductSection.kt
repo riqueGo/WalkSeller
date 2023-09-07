@@ -31,8 +31,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rique.walkseller.DI.LocalOrderViewModelProvider
-import com.rique.walkseller.DI.LocalSheetStateProvider
+import com.rique.walkseller.di.LocalOrderViewModelProvider
+import com.rique.walkseller.di.LocalSheetStateProvider
 import com.rique.walkseller.R
 import com.rique.walkseller.domain.Product
 import kotlinx.coroutines.launch

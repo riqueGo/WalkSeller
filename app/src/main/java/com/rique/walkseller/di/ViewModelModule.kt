@@ -1,4 +1,4 @@
-package com.rique.walkseller.DI
+package com.rique.walkseller.di
 
 import com.google.firebase.database.FirebaseDatabase
 import com.rique.walkseller.interfaces.IProductRepository

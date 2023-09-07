@@ -10,7 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.rique.walkseller.DI.LocalNavControllerProvider
+import com.rique.walkseller.di.LocalNavControllerProvider
 import com.rique.walkseller.domain.Seller
 import com.rique.walkseller.ui.screen.MapScreen
 import com.rique.walkseller.ui.screen.ProductsScreen

@@ -19,8 +19,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.rique.walkseller.DI.LocalOrderViewModelProvider
-import com.rique.walkseller.DI.LocalSheetStateProvider
+import com.rique.walkseller.di.LocalOrderViewModelProvider
+import com.rique.walkseller.di.LocalSheetStateProvider
 import com.rique.walkseller.domain.Seller
 import com.rique.walkseller.ui.compose.OrderBottomSheetContent
 import com.rique.walkseller.ui.compose.ProductsList

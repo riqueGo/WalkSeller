@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import com.rique.walkseller.DI.LocalNavControllerProvider
+import com.rique.walkseller.di.LocalNavControllerProvider
 import com.rique.walkseller.R
 
 @Composable
