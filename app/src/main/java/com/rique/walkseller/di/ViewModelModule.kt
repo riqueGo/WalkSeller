@@ -1,6 +1,5 @@
 package com.rique.walkseller.di
 
-import com.google.firebase.database.FirebaseDatabase
 import com.rique.walkseller.interfaces.IProductRepository
 import com.rique.walkseller.interfaces.ISellerRepository
 import com.rique.walkseller.repository.ProductRepository
@@ -48,12 +47,6 @@ object ViewModelModule {
     @ViewModelScoped
     fun provideOrderViewModel(): OrderViewModel {
         return OrderViewModel()
-    }
-
-    @Provides
-    @ViewModelScoped
-    fun provideFirebaseDatabase(): FirebaseDatabase {
-        return FirebaseDatabase.getInstance()
     }
 
     @Provides
