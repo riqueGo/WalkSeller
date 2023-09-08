@@ -3,7 +3,6 @@ package com.rique.walkseller.ui.viewModel
 import android.content.Context
 import android.location.Location
 import android.util.Log
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -17,13 +16,14 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.MapProperties
 import com.rique.walkseller.R
-import com.rique.walkseller.utils.Constants
 import com.rique.walkseller.utils.Constants.APP_TAG
 import com.rique.walkseller.interfaces.ISellerRepository
 import com.rique.walkseller.ui.state.MapState
 import com.rique.walkseller.domain.Seller
 import com.rique.walkseller.ui.state.MapPropertiesState
 import com.rique.walkseller.utils.Constants.DURATION_POS_CAMERA
+import com.rique.walkseller.utils.Constants.MAX_ZOOM
+import com.rique.walkseller.utils.Constants.MIN_ZOOM
 import com.rique.walkseller.utils.Constants.TARGET_ZOOM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(ExperimentalMaterial3Api::class)
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val sellerRepository: ISellerRepository,
@@ -52,15 +51,15 @@ class MapViewModel @Inject constructor(
     val mapState: State<MapState>
         get() = _mapState
 
-    fun setLastKnownLocation(location: Location) {
+    private fun setLastKnownLocation(location: Location) {
         _mapState.value = _mapState.value.copy(lastKnownLocation = location)
     }
 
-    fun setSellers(sellers: Flow<Collection<Seller>>) {
+    private fun setSellers(sellers: Flow<Collection<Seller>>) {
         _mapState.value = _mapState.value.copy(sellers = sellers)
     }
 
-    fun setIsMapPropertiesLoaded(isLoaded: Boolean) {
+    private fun setIsMapPropertiesLoaded(isLoaded: Boolean) {
         _mapPropertiesState.value = _mapPropertiesState.value.copy(isMapPropertiesLoaded = isLoaded)
     }
 
@@ -69,8 +68,8 @@ class MapViewModel @Inject constructor(
             mapProperties = MapProperties(
                 isMyLocationEnabled = true,
                 mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.map),
-                maxZoomPreference = Constants.MAX_ZOOM,
-                minZoomPreference = Constants.MIN_ZOOM
+                maxZoomPreference = MAX_ZOOM,
+                minZoomPreference = MIN_ZOOM
             )
         )
     }
@@ -120,7 +119,10 @@ class MapViewModel @Inject constructor(
         location?.let {
             val cameraUpdate = calculateCameraUpdate(it.toLatLng())
             viewModelScope.launch {
-                _mapPropertiesState.value.cameraPositionState.animate(cameraUpdate, DURATION_POS_CAMERA)
+                _mapPropertiesState.value.cameraPositionState.animate(
+                    cameraUpdate,
+                    DURATION_POS_CAMERA
+                )
             }.invokeOnCompletion { onCompletion() }
         }
     }

@@ -4,7 +4,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import com.rique.walkseller.domain.Seller
+import com.rique.walkseller.navigation.NavDestination
 import com.rique.walkseller.ui.state.SellerBottomSheetState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -19,10 +21,15 @@ class SellerBottomSheetViewModel @Inject constructor() : ViewModel() {
     val sellerBottomSheetState: State<SellerBottomSheetState>
         get() = _sellerBottomSheetState
 
-    fun setInitialData(sellers: Collection<Seller>, onClickPositionSeller: (Seller) -> Unit) {
+    fun setInitialData(
+        sellers: Collection<Seller>,
+        onClickPositionSeller: (Seller) -> Unit,
+        closeMap: () -> Unit
+    ) {
         _sellerBottomSheetState.value = _sellerBottomSheetState.value.copy(
             sellers = sellers,
-            onClickPositionSeller = onClickPositionSeller
+            onClickPositionSeller = onClickPositionSeller,
+            closeMap = closeMap
         )
     }
 
@@ -34,5 +41,14 @@ class SellerBottomSheetViewModel @Inject constructor() : ViewModel() {
     fun onClickSellerBottomSheet(seller: Seller) {
         setIsOpenBottomSheet(false)
         _sellerBottomSheetState.value.onClickPositionSeller(seller)
+    }
+
+    fun navigateToProducts(navController: NavController, seller: Seller) {
+        setIsOpenBottomSheet(isOpen = false)
+        _sellerBottomSheetState.value.closeMap()
+
+        val route = NavDestination.ProductsScreen.createRoute(sellerId = seller.id)
+        navController.currentBackStackEntry?.savedStateHandle?.apply { set("seller", seller) }
+        navController.navigate(route = route)
     }
 }

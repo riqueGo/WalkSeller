@@ -45,7 +45,11 @@ fun MapScreen(viewModel: MapViewModel) {
     )
 
     val sellerBottomSheetViewModel: SellerBottomSheetViewModel = hiltViewModel()
-    sellerBottomSheetViewModel.setInitialData(sellers, sellerMarkersViewModel::onClickSellerMarker)
+    sellerBottomSheetViewModel.setInitialData(
+        sellers = sellers,
+        onClickPositionSeller = sellerMarkersViewModel::onClickSellerMarker,
+        closeMap = viewModel::closeMap
+    )
 
     Scaffold { contentPadding ->
         Box(
