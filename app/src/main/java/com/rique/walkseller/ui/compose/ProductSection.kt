@@ -21,7 +21,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -86,7 +85,7 @@ fun ProductSection(product: Product, modifier: Modifier = Modifier) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "$${product.price}",
+                        text = "R$${product.price}",
                         color = MaterialTheme.colorScheme.primary,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
@@ -118,9 +117,10 @@ fun QuantityControl(product: Product) {
             IconButton(
                 onClick = {
                     orderViewModel.subtractProduct(product)
-                    orderViewModel.adjustSheetBottomOrderDetailHeight()
                     if (orderViewModel.orderState.value.totalProductsQuantity == 0 && sheetState.isVisible) {
-                        orderViewModel.setIsOpenOrderDetails(false)
+                        scope.launch {
+                            sheetState.hide()
+                        }
                     }
                 }
             ) {
@@ -130,21 +130,15 @@ fun QuantityControl(product: Product) {
             IconButton(
                 onClick = {
                     orderViewModel.addProduct(product)
-                    orderViewModel.adjustSheetBottomOrderDetailHeight()
                     if (!sheetState.isVisible) {
                         scope.launch {
-                            sheetState.partialExpand()
+                            sheetState.expand()
                         }
                     }
                 }
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Increment")
             }
-        }
-    }
-    LaunchedEffect(orderViewModel.orderState.value.totalProductsQuantity) {
-        if (orderViewModel.orderState.value.totalProductsQuantity == 0 && sheetState.isVisible) {
-            scope.launch { sheetState.hide() }
         }
     }
 }
