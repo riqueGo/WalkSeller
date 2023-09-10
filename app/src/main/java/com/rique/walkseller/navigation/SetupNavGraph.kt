@@ -1,7 +1,5 @@
 package com.rique.walkseller.navigation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,7 +16,6 @@ import com.rique.walkseller.ui.viewModel.MapViewModel
 import com.rique.walkseller.ui.viewModel.OrderViewModel
 import com.rique.walkseller.ui.viewModel.ProductsViewModel
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun SetupNavGraph(mapViewModel: MapViewModel, productsViewModel: ProductsViewModel) {
     val navController = rememberNavController()

@@ -7,4 +7,5 @@ object Constants {
     const val MIN_ZOOM: Float = 16f
     const val MAX_ZOOM: Float = 20f
     const val DURATION_POS_CAMERA = 700
+    const val ORDER_SHEET_EXPANDED = 96
 }

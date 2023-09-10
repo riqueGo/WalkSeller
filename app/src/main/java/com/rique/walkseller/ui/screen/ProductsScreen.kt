@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.rique.walkseller.di.LocalOrderViewModelProvider
 import com.rique.walkseller.di.LocalSheetStateProvider
@@ -28,6 +29,7 @@ import com.rique.walkseller.ui.compose.ProductsScreenCover
 import com.rique.walkseller.ui.compose.SellerSection
 import com.rique.walkseller.ui.viewModel.OrderViewModel
 import com.rique.walkseller.ui.viewModel.ProductsViewModel
+import com.rique.walkseller.utils.Constants.ORDER_SHEET_EXPANDED
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,8 +54,12 @@ fun ProductsScreen(
         sheetDragHandle = null,
         sheetSwipeEnabled = false,
         sheetTonalElevation = 96.dp,
-        sheetPeekHeight = orderViewModel.orderBottomSheetState.value.sheetHeight,
-        sheetContent = { OrderBottomSheetContent(orderViewModel) },
+        sheetPeekHeight = Dp.Infinity,
+        sheetContent = {
+            CompositionLocalProvider(LocalOrderViewModelProvider provides orderViewModel) {
+                OrderBottomSheetContent()
+            }
+        },
         scaffoldState = scaffoldState
     ) {
         Column(
@@ -83,8 +89,8 @@ fun ProductsScreen(
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            if (orderState.totalProductsQuantity > 0){
-                Box(modifier = Modifier.height(orderViewModel.getExpandedOrderBottomSheetHeight()))
+            if (orderState.totalProductsQuantity > 0) {
+                Box(modifier = Modifier.height(ORDER_SHEET_EXPANDED.dp))
             }
         }
         LaunchedEffect(seller.id) {

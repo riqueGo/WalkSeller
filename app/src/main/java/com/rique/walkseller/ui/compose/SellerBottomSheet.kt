@@ -1,6 +1,7 @@
 package com.rique.walkseller.ui.compose
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rique.walkseller.R
+import com.rique.walkseller.di.LocalNavControllerProvider
 import com.rique.walkseller.domain.Seller
 import com.rique.walkseller.ui.viewModel.SellerBottomSheetViewModel
 import kotlinx.coroutines.launch
@@ -54,12 +56,19 @@ fun SellerBottomSheetTitle(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SellerBottomSheetCard(seller: Seller, onClickPositionSeller: () -> Unit) {
+fun SellerBottomSheetCard(
+    seller: Seller,
+    onClickPositionSeller: () -> Unit,
+    onClickCard: () -> Unit
+) {
     Card(
         elevation = CardDefaults.cardElevation(4.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp)
+            .clickable {
+                onClickCard()
+            }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -74,16 +83,22 @@ fun SellerBottomSheetCard(seller: Seller, onClickPositionSeller: () -> Unit) {
                     .clip(CircleShape)
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.weight(2f)
+            ) {
                 Text(
                     text = seller.name, fontWeight = FontWeight.Bold, fontSize = 16.sp
                 )
                 Text(text = seller.description)
             }
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = {
-                onClickPositionSeller()
-            }) {
+            Spacer(modifier = Modifier.width(16.dp))
+            IconButton(
+                onClick = {
+                    onClickPositionSeller()
+                },
+                modifier = Modifier.weight(0.5f)
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.my_location),
                     contentDescription = stringResource(R.string.go_to_seller)
@@ -99,6 +114,8 @@ fun SellerBottomSheet(viewModel: SellerBottomSheetViewModel) {
     val state = viewModel.sellerBottomSheetState.value
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
+    val navController = LocalNavControllerProvider.current
+
 
     if (state.isOpenBottomSheet) {
         ModalBottomSheet(
@@ -112,13 +129,22 @@ fun SellerBottomSheet(viewModel: SellerBottomSheetViewModel) {
             ) {
                 SellerBottomSheetTitle(modifier = Modifier.align(Alignment.CenterHorizontally))
                 state.sellers.forEach { seller ->
-                    SellerBottomSheetCard(seller = seller) {
-                        scope.launch {
-                            sheetState.hide()
-                        }.invokeOnCompletion {
-                            viewModel.onClickSellerBottomSheet(seller)
+                    SellerBottomSheetCard(
+                        seller = seller,
+                        onClickPositionSeller = {
+                            scope.launch {
+                                sheetState.hide()
+                            }.invokeOnCompletion {
+                                viewModel.onClickSellerBottomSheet(seller)
+                            }
+                        },
+                        onClickCard = {
+                            viewModel.navigateToProducts(
+                                navController = navController,
+                                seller = seller
+                            )
                         }
-                    }
+                    )
                 }
             }
         }

@@ -12,7 +12,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.firebase.FirebaseApp
 import com.rique.walkseller.navigation.SetupNavGraph
 import com.rique.walkseller.ui.viewModel.MapViewModel
 import com.rique.walkseller.ui.viewModel.ProductsViewModel
@@ -51,7 +50,6 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FirebaseApp.initializeApp(this)
         askPermissions()
         setContent {
             SetupNavGraph(mapViewModel = mapViewModel, productsViewModel = productsViewModel)

@@ -6,5 +6,6 @@ data class SellerBottomSheetState(
     val isOpenBottomSheet: Boolean = false,
     val sellers: Collection<Seller> = emptyList(),
     val onClickPositionSeller: (Seller) -> Unit = {},
-    val navigateToSellerProducts: (Seller) -> Unit = {}
+    val navigateToSellerProducts: (Seller) -> Unit = {},
+    val closeMap: () -> Unit = { }
 )

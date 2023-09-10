@@ -3,8 +3,6 @@ package com.rique.walkseller.ui.viewModel
 import android.location.Location
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import com.rique.walkseller.domain.Order
 import com.rique.walkseller.domain.Product
@@ -17,7 +15,6 @@ import javax.inject.Inject
 class OrderViewModel @Inject constructor() : ViewModel() {
     private val _orderState = mutableStateOf(Order())
     private val _orderBottomSheetState = mutableStateOf(OrderBottomSheetState())
-    private val expandedOrderBottomSheetHeight = 96.dp
 
     val orderState: State<Order>
         get() = _orderState
@@ -31,24 +28,6 @@ class OrderViewModel @Inject constructor() : ViewModel() {
 
     fun setIsOpenOrderDetails(isOpen: Boolean){
         _orderBottomSheetState.value = _orderBottomSheetState.value.copy(isOpenOrderDetails = isOpen)
-    }
-
-    fun setSheetHeight(height: Dp){
-        _orderBottomSheetState.value = _orderBottomSheetState.value.copy(sheetHeight = height)
-    }
-
-    fun getExpandedOrderBottomSheetHeight(): Dp {
-        return (20 * _orderState.value.productById.size).dp + expandedOrderBottomSheetHeight
-    }
-
-    fun adjustSheetBottomOrderDetailHeight() {
-        val expandedOrderDetailsHeight = getExpandedOrderBottomSheetHeight()
-
-        if (_orderBottomSheetState.value.isOpenOrderDetails && _orderBottomSheetState.value.sheetHeight != expandedOrderDetailsHeight) {
-            setSheetHeight(expandedOrderDetailsHeight)
-        } else if (!_orderBottomSheetState.value.isOpenOrderDetails && _orderBottomSheetState.value.sheetHeight != expandedOrderBottomSheetHeight){
-            setSheetHeight(expandedOrderBottomSheetHeight)
-        }
     }
 
     private fun setOrderValues(
@@ -106,5 +85,15 @@ class OrderViewModel @Inject constructor() : ViewModel() {
             totalProductsQuantity = _orderState.value.totalProductsQuantity - 1,
             totalOrderPrice = _orderState.value.totalOrderPrice - product.price
         )
+    }
+
+    fun getFormattedTotalPrice(): String {
+        val orderState = _orderState.value
+        return String.format("%.2f", orderState.totalOrderPrice)
+    }
+
+    fun getTotalProductsQuantityAsString(): String {
+        val orderState = _orderState.value
+        return orderState.totalProductsQuantity.toString()
     }
 }
