@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Walk Seller</string>
+    <string name="sellers">Sellers</string>
+    <string name="go_to_seller">Go to Seller</string>
+    <string name="my_location">My Location</string>
+    <string name="products">Products</string>
+    <string name="see_products">See Products</string>
+    <string name="see_details">See Details</string>
+    <string name="order_details">Order Details</string>
 </resources>
