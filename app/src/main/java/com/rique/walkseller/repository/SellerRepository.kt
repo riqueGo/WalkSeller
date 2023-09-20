@@ -34,12 +34,14 @@ class SellerRepository : ISellerRepository {
                     val description = doc.getString("description") ?: ""
                     val geopoint = doc.getGeoPoint("location")
                     val position = LatLng(geopoint?.latitude ?: 0.0, geopoint?.longitude ?: 0.0)
+                    val phone = doc.getString("phone") ?: ""
                     sellersList.add(
                         Seller(
                             id = doc.id,
                             name = name,
                             description = description,
-                            position = position
+                            position = position,
+                            phone = phone
                         )
                     )
                 }

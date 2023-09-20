@@ -8,6 +8,7 @@ data class Order(
     val totalProductsQuantity: Int = 0,
     val totalOrderPrice: Double = 0.0,
     val customerLocation: Location? = null,
-    val sellerId: String = ""
+    val sellerId: String = "",
+    val sellerPhone: String = ""
 )
 

@@ -32,10 +32,15 @@ fun SetupNavGraph(mapViewModel: MapViewModel, productsViewModel: ProductsViewMod
                 route = NavDestination.ProductsScreen.route,
                 arguments = listOf(navArgument("sellerId") { type = NavType.StringType })
             ) {
-                val seller = navController.previousBackStackEntry?.savedStateHandle?.get<Seller>("seller")
+                val seller =
+                    navController.previousBackStackEntry?.savedStateHandle?.get<Seller>("seller")
                 if (seller != null) {
                     val orderViewModel: OrderViewModel = hiltViewModel()
-                    orderViewModel.setInitialData(sellerId = seller.id, customerLocation = mapViewModel.mapState.value.lastKnownLocation)
+                    orderViewModel.setInitialData(
+                        sellerId = seller.id,
+                        sellerPhone = seller.phone,
+                        customerLocation = mapViewModel.mapState.value.lastKnownLocation
+                    )
 
                     ProductsScreen(
                         viewModel = productsViewModel,

@@ -9,5 +9,6 @@ data class Seller(
     val id: String,
     val position: LatLng,
     val name: String,
-    val description: String
+    val description: String,
+    val phone: String
 ) : Parcelable

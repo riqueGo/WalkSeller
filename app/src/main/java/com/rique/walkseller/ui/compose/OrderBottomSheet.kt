@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,7 +49,10 @@ fun ProductsReviewList() {
             }
         }
         Divider(modifier = Modifier.padding(16.dp))
-        TotalPriceAndItems(orderViewModel.getFormattedTotalPrice(), orderViewModel.getTotalProductsQuantityAsString())
+        TotalPriceAndItems(
+            orderViewModel.getFormattedTotalPrice(),
+            orderViewModel.getTotalProductsQuantityAsString()
+        )
     }
 }
 
@@ -77,7 +81,10 @@ fun OrderPrice(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Bottom
     ) {
-        TotalPriceAndItems(orderViewModel.getFormattedTotalPrice(), orderViewModel.getTotalProductsQuantityAsString())
+        TotalPriceAndItems(
+            orderViewModel.getFormattedTotalPrice(),
+            orderViewModel.getTotalProductsQuantityAsString()
+        )
         Button(
             onClick = {
                 orderViewModel.setIsOpenOrderDetails(true)
@@ -92,6 +99,7 @@ fun OrderPrice(modifier: Modifier = Modifier) {
 @Composable
 fun OrderBottomSheetContent() {
     val orderViewModel = LocalOrderViewModelProvider.current
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -102,10 +110,15 @@ fun OrderBottomSheetContent() {
         if (orderViewModel.orderBottomSheetState.value.isOpenOrderDetails) {
             GenericAlertDialog(
                 onDismissRequest = { orderViewModel.setIsOpenOrderDetails(false) },
-                onConfirmation = { orderViewModel.setIsOpenOrderDetails(false) },
+                onConfirmation = { orderViewModel.sendOrder(context) },
                 dialogTitle = { Text(text = stringResource(R.string.order_details)) },
                 dialogText = { ProductsReviewList() },
-                icon = { Icon(Icons.Default.Done, contentDescription = stringResource(R.string.order_details)) }
+                icon = {
+                    Icon(
+                        Icons.Default.Done,
+                        contentDescription = stringResource(R.string.order_details)
+                    )
+                }
             )
         }
     }
