@@ -69,6 +69,7 @@ fun ProductsScreen(
                 .fillMaxSize()
         ) {
             ProductsScreenCover(
+                coverImageUrl = seller.coverImageURL,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)

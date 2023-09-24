@@ -2,6 +2,7 @@ package com.rique.walkseller.repository
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.rique.walkseller.domain.Product
 import com.rique.walkseller.interfaces.IProductRepository
 import com.rique.walkseller.utils.Constants.DB_TAG
@@ -11,6 +12,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class ProductRepository : IProductRepository {
     private val db = FirebaseFirestore.getInstance()
+    private val storage = FirebaseStorage.getInstance()
 
     // Create a cache using a map
     private val productCache = mutableMapOf<String, List<Product>>()
@@ -32,7 +34,6 @@ class ProductRepository : IProductRepository {
                         val name = document.getString("name") ?: ""
                         val description = document.getString("description") ?: ""
                         val price = document.getDouble("price") ?: 0.0
-                        val urlImage = document.getString("urlImage") ?: ""
                         val isActive = document.getBoolean("isActive") ?: true
 
                         val product = Product(
@@ -40,9 +41,14 @@ class ProductRepository : IProductRepository {
                             name = name,
                             description = description,
                             price = price,
-                            urlImage = urlImage,
                             isActive = isActive
                         )
+
+                        val urlImageRef = storage.reference.child("sellers/${sellerId}/products/${document.id}.jpeg")
+
+                        urlImageRef.downloadUrl.addOnSuccessListener { uri ->
+                            product.urlImage = uri.toString()
+                        }
 
                         products.add(product)
                     }

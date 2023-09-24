@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.storage.FirebaseStorage
 import com.rique.walkseller.domain.Seller
 import com.rique.walkseller.interfaces.ISellerRepository
 import com.rique.walkseller.utils.Constants.DB_TAG
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class SellerRepository : ISellerRepository {
 
     private val db = FirebaseFirestore.getInstance()
+    private val storage = FirebaseStorage.getInstance()
     private val sellersFlow = MutableStateFlow<Collection<Seller>>(emptyList())
     private var registration: ListenerRegistration? = null
 
@@ -35,15 +37,26 @@ class SellerRepository : ISellerRepository {
                     val geopoint = doc.getGeoPoint("location")
                     val position = LatLng(geopoint?.latitude ?: 0.0, geopoint?.longitude ?: 0.0)
                     val phone = doc.getString("phone") ?: ""
-                    sellersList.add(
-                        Seller(
-                            id = doc.id,
-                            name = name,
-                            description = description,
-                            position = position,
-                            phone = phone
-                        )
+                    val seller = Seller(
+                        id = doc.id,
+                        name = name,
+                        description = description,
+                        position = position,
+                        phone = phone
                     )
+
+                    val profileImageRef = storage.reference.child("sellers/${doc.id}/profile.jpeg")
+                    val coverImageRef = storage.reference.child("sellers/${doc.id}/cover.jpeg")
+
+                    profileImageRef.downloadUrl.addOnSuccessListener { uri ->
+                        seller.profileImageURL = uri.toString()
+                    }
+
+                    coverImageRef.downloadUrl.addOnSuccessListener { uri ->
+                        seller.coverImageURL = uri.toString()
+                    }
+
+                    sellersList.add(seller)
                 }
                 sellersFlow.value = sellersList
             }

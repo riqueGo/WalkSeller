@@ -1,6 +1,5 @@
 package com.rique.walkseller.ui.compose
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -12,22 +11,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.rique.walkseller.di.LocalNavControllerProvider
-import com.rique.walkseller.R
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ProductsScreenCover(modifier: Modifier = Modifier){
+fun ProductsScreenCover(coverImageUrl: String, modifier: Modifier = Modifier){
     val navController = LocalNavControllerProvider.current
 
     Box(
         modifier = modifier
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.product),
-            contentDescription = "Cover Image",
+        GlideImage(
+            model = coverImageUrl,
+            contentDescription = "desc",
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
         )
         IconButton(
             onClick = { navController.popBackStack() },

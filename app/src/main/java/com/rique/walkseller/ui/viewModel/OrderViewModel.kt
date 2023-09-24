@@ -138,7 +138,7 @@ class OrderViewModel @Inject constructor() : ViewModel() {
         }
 
         var message =
-            "TO PASSANDO\n\n" +
+            "TO PASSANDO \uD83D\uDEB2\n\n" +
                     "Estou nos arredores do endereço:\n\n" +
                     address +
                     "*Google Maps:* ${Uri.encode(googleMapsUrl)}\n\n" +

@@ -1,6 +1,5 @@
 package com.rique.walkseller.ui.compose
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +33,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.rique.walkseller.R
 import com.rique.walkseller.di.LocalNavControllerProvider
 import com.rique.walkseller.domain.Seller
@@ -55,6 +56,7 @@ fun SellerBottomSheetTitle(modifier: Modifier = Modifier) {
     Divider(color = Color.Gray, modifier = Modifier.padding(bottom = 16.dp))
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun SellerBottomSheetCard(
     seller: Seller,
@@ -74,8 +76,8 @@ fun SellerBottomSheetCard(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(16.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.product),
+            GlideImage(
+                model = seller.profileImageURL,
                 contentDescription = seller.name,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

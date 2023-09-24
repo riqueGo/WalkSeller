@@ -10,5 +10,7 @@ data class Seller(
     val position: LatLng,
     val name: String,
     val description: String,
-    val phone: String
+    val phone: String,
+    var profileImageURL: String = "",
+    var coverImageURL: String = "",
 ) : Parcelable

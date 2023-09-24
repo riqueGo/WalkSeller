@@ -1,6 +1,5 @@
 package com.rique.walkseller.ui.compose
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,12 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.rique.walkseller.di.LocalNavControllerProvider
 import com.rique.walkseller.di.LocalSellerMarkersViewModelProvider
 import com.rique.walkseller.R
@@ -33,6 +33,7 @@ fun SellerMarkerDialog(onDismiss: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun SellerMarkerDialogUI() {
     val sellerMarkersViewModel = LocalSellerMarkersViewModelProvider.current
@@ -47,10 +48,10 @@ fun SellerMarkerDialogUI() {
             .padding(24.dp)
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Image(
-                painter = painterResource(id = R.drawable.product),
+            GlideImage(
+                model = seller.coverImageURL,
                 contentDescription = seller.name,
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
