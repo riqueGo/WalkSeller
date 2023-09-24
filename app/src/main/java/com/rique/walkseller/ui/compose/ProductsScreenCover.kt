@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -35,12 +34,6 @@ fun ProductsScreenCover(coverImageUrl: String, modifier: Modifier = Modifier){
             modifier = Modifier.align(Alignment.TopStart)
         ) {
             Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
-        }
-        IconButton(
-            onClick = {},
-            modifier = Modifier.align(Alignment.TopEnd)
-        ) {
-            Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favorite")
         }
     }
 }
