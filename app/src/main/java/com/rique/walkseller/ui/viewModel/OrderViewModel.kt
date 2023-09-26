@@ -5,7 +5,6 @@ import android.content.Intent
 import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
-import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -13,6 +12,7 @@ import com.rique.walkseller.domain.Order
 import com.rique.walkseller.domain.Product
 import com.rique.walkseller.dto.ProductDto
 import com.rique.walkseller.ui.state.OrderBottomSheetState
+import com.rique.walkseller.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -154,6 +154,13 @@ class OrderViewModel @Inject constructor() : ViewModel() {
 
 
     fun sendOrder(context: Context) {
+        val packageName = "com.whatsapp" // WhatsApp package name
+        val pm = context.packageManager
+        if(!Utils.isPackageInstalled(packageName, pm)){
+            Utils.showToast(context, "WhatsApp não está instalado")
+            return
+        }
+
         // Ensure that the customer's location is not null
         val customerLocation = _orderState.value.customerLocation
         if (customerLocation != null) {
@@ -176,17 +183,13 @@ class OrderViewModel @Inject constructor() : ViewModel() {
                 } catch (e: Exception) {
                     // Handle any exceptions that may occur
                     launch(Dispatchers.Main) {
-                        Toast.makeText(
-                            context,
-                            "Error sending order: ${e.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Utils.showToast(context, "Error sending order: ${e.message}")
                     }
                 }
             }
         } else {
             // Handle the case where customerLocation is null
-            Toast.makeText(context, "Customer location is null", Toast.LENGTH_SHORT).show()
+            Utils.showToast(context, "Customer location is null")
         }
     }
 }

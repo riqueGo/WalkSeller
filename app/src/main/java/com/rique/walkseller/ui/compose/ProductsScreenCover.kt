@@ -24,7 +24,7 @@ fun ProductsScreenCover(coverImageUrl: String, modifier: Modifier = Modifier){
     ) {
         GlideImage(
             model = coverImageUrl,
-            contentDescription = "desc",
+            contentDescription = "cover",
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()

@@ -1,6 +1,7 @@
 package com.rique.walkseller.utils
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
@@ -29,5 +30,14 @@ object Utils {
             return BitmapDescriptorFactory.fromBitmap(bitmap)
         }
         throw IllegalArgumentException("Vector resource not found")
+    }
+
+    fun isPackageInstalled(packageName: String, packageManager: PackageManager): Boolean {
+        return try {
+            packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
     }
 }

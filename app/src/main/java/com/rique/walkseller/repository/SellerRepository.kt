@@ -16,6 +16,7 @@ class SellerRepository : ISellerRepository {
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
     private val sellersFlow = MutableStateFlow<Collection<Seller>>(emptyList())
+    private val sellerCache = mutableMapOf<String, Seller>() // Cache to store seller information
     private var registration: ListenerRegistration? = null
 
     override fun startListener() {
@@ -25,6 +26,7 @@ class SellerRepository : ISellerRepository {
 
         // Start the Firestore SnapshotListener
         registration = db.collection("sellers")
+            .whereEqualTo("isActive", true)
             .addSnapshotListener { document, e ->
                 if (e != null) {
                     Log.w(DB_TAG, e.message.toString())
@@ -37,28 +39,43 @@ class SellerRepository : ISellerRepository {
                     val geopoint = doc.getGeoPoint("location")
                     val position = LatLng(geopoint?.latitude ?: 0.0, geopoint?.longitude ?: 0.0)
                     val phone = doc.getString("phone") ?: ""
-                    val seller = Seller(
-                        id = doc.id,
-                        name = name,
-                        description = description,
-                        position = position,
-                        phone = phone
-                    )
+                    val sellerId = doc.id
 
-                    val profileImageRef = storage.reference.child("sellers/${doc.id}/profile.jpeg")
-                    val coverImageRef = storage.reference.child("sellers/${doc.id}/cover.jpeg")
+                    // Check if the seller is in the cache
+                    val cachedSeller = sellerCache[sellerId]
+                    if (cachedSeller != null) {
+                        // If the seller is in the cache, update the position
+                        cachedSeller.position = position
+                    } else {
+                        // If not in cache, create a new seller
+                        val seller = Seller(
+                            id = sellerId,
+                            name = name,
+                            description = description,
+                            position = position,
+                            phone = phone
+                        )
 
-                    profileImageRef.downloadUrl.addOnSuccessListener { uri ->
-                        seller.profileImageURL = uri.toString()
+                        val profileImageRef = storage.reference.child("sellers/$sellerId/profile.jpeg")
+                        val coverImageRef = storage.reference.child("sellers/$sellerId/cover.jpeg")
+
+                        profileImageRef.downloadUrl.addOnSuccessListener { uri ->
+                            seller.profileImageURL = uri.toString()
+                        }
+
+                        coverImageRef.downloadUrl.addOnSuccessListener { uri ->
+                            seller.coverImageURL = uri.toString()
+                        }
+
+                        sellersList.add(seller)
                     }
-
-                    coverImageRef.downloadUrl.addOnSuccessListener { uri ->
-                        seller.coverImageURL = uri.toString()
-                    }
-
-                    sellersList.add(seller)
                 }
                 sellersFlow.value = sellersList
+
+                // Update the cache with the latest data
+                for (seller in sellersList) {
+                    sellerCache[seller.id] = seller
+                }
             }
     }
 

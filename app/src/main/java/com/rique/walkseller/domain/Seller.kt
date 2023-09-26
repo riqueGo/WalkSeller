@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Seller(
     val id: String,
-    val position: LatLng,
+    var position: LatLng,
     val name: String,
     val description: String,
     val phone: String,
