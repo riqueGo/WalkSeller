@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">Walk Seller</string>
-    <string name="sellers">Sellers</string>
-    <string name="go_to_seller">Go to Seller</string>
-    <string name="my_location">My Location</string>
-    <string name="products">Products</string>
-    <string name="see_products">See Products</string>
-    <string name="see_details">See Details</string>
-    <string name="order_details">Order Details</string>
+    <string name="sellers">Vendedores</string>
+    <string name="go_to_seller">Ir ao Vendedor</string>
+    <string name="my_location">Minha Localização</string>
+    <string name="products">Produtos</string>
+    <string name="see_products">Ver Produtos</string>
+    <string name="see_details">Ver detalhes</string>
+    <string name="order_details">Detalhes do Pedido</string>
+    <string name="confirm">Confirmar</string>
+    <string name="dismiss">Fechar</string>
 </resources>

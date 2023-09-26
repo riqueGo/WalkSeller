@@ -1,6 +1,5 @@
 package com.rique.walkseller.ui.compose
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,13 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rique.walkseller.R
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.rique.walkseller.domain.Seller
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun SellerSection(seller: Seller, modifier: Modifier = Modifier){
     Row(
@@ -45,9 +45,9 @@ fun SellerSection(seller: Seller, modifier: Modifier = Modifier){
                 .background(MaterialTheme.colorScheme.primary),
             contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.product),
-                contentDescription = "Cover Image",
+            GlideImage(
+                model = seller.profileImageURL,
+                contentDescription = seller.name,
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.fillMaxSize()
             )

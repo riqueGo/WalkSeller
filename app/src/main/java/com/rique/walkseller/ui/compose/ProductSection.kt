@@ -1,6 +1,5 @@
 package com.rique.walkseller.ui.compose
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,14 +24,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.rique.walkseller.R
 import com.rique.walkseller.di.LocalOrderViewModelProvider
 import com.rique.walkseller.di.LocalSheetStateProvider
-import com.rique.walkseller.R
 import com.rique.walkseller.domain.Product
 import kotlinx.coroutines.launch
 
@@ -48,6 +50,7 @@ fun ProductsList(products: List<Product>, modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ProductSection(product: Product, modifier: Modifier = Modifier) {
     Column(
@@ -63,9 +66,9 @@ fun ProductSection(product: Product, modifier: Modifier = Modifier) {
                     .size(90.dp)
                     .clip(RoundedCornerShape(4.dp))
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.product),
-                    contentDescription = "Product Image",
+                GlideImage(
+                    model = product.urlImage,
+                    contentDescription = product.name,
                     contentScale = ContentScale.FillBounds
                 )
             }
@@ -124,7 +127,7 @@ fun QuantityControl(product: Product) {
                     }
                 }
             ) {
-                Icon(imageVector = Icons.Default.Clear, contentDescription = "Decrement")
+                Icon(painter = painterResource(id = R.drawable.minus_24), contentDescription = "Decrement", tint = Color.DarkGray)
             }
             Text(text = (orderState.productById[product.id]?.quantity ?: 0).toString())
             IconButton(
@@ -137,7 +140,7 @@ fun QuantityControl(product: Product) {
                     }
                 }
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Increment")
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Increment", tint = Color.DarkGray)
             }
         }
     }
