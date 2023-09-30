@@ -60,12 +60,12 @@ fun ProductsReviewList() {
 fun TotalPriceAndItems(totalPrice: String, totalQuantity: String) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
-            text = "Total Price: R$${totalPrice}",
+            text = "Preço Total: R$${totalPrice}",
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
         )
         Text(
-            text = "Total Items: $totalQuantity",
+            text = "Quantidade Total: $totalQuantity",
             fontWeight = FontWeight.Light,
             fontSize = 16.sp
         )

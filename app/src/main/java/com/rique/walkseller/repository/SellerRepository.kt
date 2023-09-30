@@ -9,13 +9,12 @@ import com.rique.walkseller.domain.Seller
 import com.rique.walkseller.interfaces.ISellerRepository
 import com.rique.walkseller.utils.Constants.DB_TAG
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 
 class SellerRepository : ISellerRepository {
 
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
-    private val sellersFlow = MutableStateFlow<Collection<Seller>>(emptyList())
     private val sellerCache = mutableMapOf<String, Seller>() // Cache to store seller information
     private var registration: ListenerRegistration? = null
 
@@ -26,23 +25,29 @@ class SellerRepository : ISellerRepository {
 
         // Start the Firestore SnapshotListener
         registration = db.collection("sellers")
-            .whereEqualTo("isActive", true)
             .addSnapshotListener { document, e ->
                 if (e != null) {
                     Log.w(DB_TAG, e.message.toString())
                     return@addSnapshotListener
                 }
-                val sellersList = mutableListOf<Seller>()
                 for (doc in document!!) {
+                    val isActive = doc.getBoolean("isActive") ?: false
+                    val sellerId = doc.id
+                    val cachedSeller = sellerCache[sellerId]
+
+                    if (!isActive) {
+                        // Remove inactive sellers from the cache
+                        sellerCache.remove(sellerId)
+                        continue
+                    }
+
                     val name = doc.getString("name") ?: ""
                     val description = doc.getString("description") ?: ""
-                    val geopoint = doc.getGeoPoint("location")
+                    val geopoint = doc.getGeoPoint("position")
                     val position = LatLng(geopoint?.latitude ?: 0.0, geopoint?.longitude ?: 0.0)
                     val phone = doc.getString("phone") ?: ""
-                    val sellerId = doc.id
 
                     // Check if the seller is in the cache
-                    val cachedSeller = sellerCache[sellerId]
                     if (cachedSeller != null) {
                         // If the seller is in the cache, update the position
                         cachedSeller.position = position
@@ -67,14 +72,8 @@ class SellerRepository : ISellerRepository {
                             seller.coverImageURL = uri.toString()
                         }
 
-                        sellersList.add(seller)
+                        sellerCache[seller.id] = seller
                     }
-                }
-                sellersFlow.value = sellersList
-
-                // Update the cache with the latest data
-                for (seller in sellersList) {
-                    sellerCache[seller.id] = seller
                 }
             }
     }
@@ -85,6 +84,8 @@ class SellerRepository : ISellerRepository {
     }
 
     override fun getSellers(): Flow<Collection<Seller>> {
-        return sellersFlow
+        // Filter active sellers from the cache and return them
+        val activeSellers = sellerCache.values
+        return flowOf(activeSellers)
     }
 }
