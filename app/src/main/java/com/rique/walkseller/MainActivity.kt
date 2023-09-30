@@ -45,14 +45,14 @@ class MainActivity : ComponentActivity() {
     private fun initializeMap() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         mapViewModel.initMap(fusedLocationProviderClient, applicationContext)
+        setContent {
+            SetupNavGraph(mapViewModel = mapViewModel, productsViewModel = productsViewModel)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         askPermissions()
-        setContent {
-            SetupNavGraph(mapViewModel = mapViewModel, productsViewModel = productsViewModel)
-        }
     }
 }
